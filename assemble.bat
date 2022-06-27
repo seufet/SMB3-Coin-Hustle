@@ -1,2 +1,1 @@
 nesasm3 SMB3CoinHustle.asm
-pause

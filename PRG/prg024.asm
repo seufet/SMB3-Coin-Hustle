@@ -769,14 +769,52 @@ PRG024_A545:
 ;;;;;;;;;;;;;;;;;;;;; BEGIN COIN HUSTLE CODE $a545-$a7ff ;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+; Show the normal title screen and then perform initial per-game setup, e.g. give some coins to start with
+CoinHustleTitleScreen:
+	JSR Do_Title_Screen	; Do the normal title screen
+
+; XXX will also need to do this when Mario continues after game over...	
+CoinHustlePerGameSetup:
+	LDA #$19 ; 25 coins to start with
+	STA Inventory_Coins
+	RTS
+
+; Tables for coin-related speed progression!
+Tbl_MaxWalkSpeed:	.byte $10, $10, $14, $18, $18, $18, $18, $18
+Tbl_MaxRunSpeed:	.byte $18, $18, $1c, $20, $28, $30, $38, $40
+Tbl_CoinEatMask:	.byte $ff, $7f, $3f
+
+
 DoCoinHustle:
 
+; Ensures that Leaf/Tanooki can always fly
+InfiniteFlight:
+	LDY <Player_Suit
+	LDA PowerUp_Ability,Y	; Get "ability" flags for this power up
+	AND #$01
+	BEQ EatCoin	 	; If power up does not have flight ability, jump ahead
+	LDA #$7f	; we'll eventually mod PRG8 not to check PlayerPower for flight as Power will be coin-determined
+	STA Player_Power ; Player_Power = $7F
+	LDA #$ff
+	STA Player_FlyTime ; Player_FlyTime = $FF
+
+
+EatCoin:
+	; ensure we really want to eat a coin here...
 	LDA Inventory_Coins ; NOTE: these are Mario's coins; Luigi's are at $7dc5 so we'll need logic to address that eventually
-	BEQ CoinHustleDone ; exit if no coins
-	LDA <Counter_1
-	AND #$3F
-	BNE CoinHustleDone ; proceed every 64 frames
-	DEC Inventory_Coins ; eat a coin!
+	BEQ CoinHustleDone ; don't eat if... if no coins
+	LDA Player_StarInv ; starman active
+	ORA EndCard_Flag   ; end card grabbed
+	BNE CoinHustleDone ; exit if star active
+	
+	; enforce difficulty level
+	LDX #$00   ; x = difficulty level, used as index in CoinEatMask table
+	LDA Tbl_CoinEatMask,X    ; access mask from table
+	AND <Counter_1    ; compare to counter
+	BNE CoinHustleDone ; proceed every 64 (hard), 128 (medium), or 256 (easy) frames
+	
+	; actually eat the coin!
+	DEC Inventory_Coins
 	
 
 CoinHustleDone:

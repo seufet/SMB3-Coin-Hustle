@@ -523,7 +523,8 @@ PRG030_845A:
 	STA PPU_CTL1	 	; Generate VBlank Resets, use 8x16 sprites, sprites use PT2
 	STA <PPU_CTL1_Copy	; Keep PPU_CTL1_Copy in sync!
 
-	JSR Do_Title_Screen	; Do the title screen!
+	;JSR Do_Title_Screen	; Do the title screen!
+	JSR CoinHustleTitleScreen;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; BEGINNING INITIALIZATION OF WORLD MAP!
