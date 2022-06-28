@@ -436,8 +436,14 @@ PRG029_CED7:
 	BEQ PRG029_CF0B	 	; If Player_StarInv = 0 (not star invincible), jump to PRG029_CF0B
 
 	LDA <Counter_1
-	AND #$01
-	BEQ PRG029_CEEA		; Every other tick, jump to PRG029_CEEA
+
+	; Coin hustle
+	; star invincibility counter decrements every 4th frame instead of 2nd, doubling length of invincibility for de-nerfing purposes
+	AND #$03
+	BNE PRG029_CEEA
+	
+	;AND #$01
+	;BEQ PRG029_CEEA		; Every other tick, jump to PRG029_CEEA
 
 	DEC Player_StarInv	 ; Player_StarInv--
 

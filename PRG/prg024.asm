@@ -780,10 +780,10 @@ CoinHustlePerGameSetup:
 	RTS
 
 ; Tables for coin-related speed progression!
-Tbl_MaxWalkSpeed:	.byte $10, $10, $14, $18, $18, $18, $18, $18
-Tbl_MaxRunSpeed:	.byte $18, $18, $1c, $20, $28, $30, $38, $40
-Tbl_HustlePMeter:	.byte $00, $01, $03, $07, $0f, $1f, $3f, $7f
-Tbl_CoinEatMask:	.byte $ff, $7f, $3f
+Tbl_MaxWalkSpeed:	.byte $10, $10, $14, $18, $18, $18, $18, $18 ; max walk/run speed determined by using hustle factor as index into these tables
+Tbl_MaxRunSpeed:	.byte $18, $18, $1c, $20, $28, $30, $38, $40 ; 
+Tbl_HustlePMeter:	.byte $00, $01, $03, $07, $0f, $1f, $3f, $7f ; converts hustle factor to P-Meter value; just drives display
+Tbl_CoinEatMask:	.byte $ff, $7f, $3f    ; for difficulty levels - easy, medium, hard
 
 
 DoCoinHustle:
