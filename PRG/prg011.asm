@@ -2705,54 +2705,69 @@ PRG011_AF46:
 	JSR Map_Object_March_UpdateXs	; Copy updated X's to the map RAM
 
 	DEC Map_March_Count,X	 	; Decrement the march counter
-	BNE PRG011_AF84	 		; If not zero, jump to PRG011_AF84 (RTS)
+	
+; Coin Hustle - Section below skipped so that marching objects can land on each other, thus disabling
+; the mechanism that permits early hammer skip
+	
+	
+	RTS		; return, skipping the object collision check
 
-	LDA Map_MusicBox_Cnt
-	BNE PRG011_AF84	 		; If music box active, jump to PRG011_AF84
+
+;	BNE PRG011_AF84	 		; If not zero, jump to PRG011_AF84 (RTS)
+
+
+	
+
+;	LDA Map_MusicBox_Cnt
+;	BNE PRG011_AF84	 		; If music box active, jump to PRG011_AF84
+
+
 
 	; This is going to loop through all OTHER objects...
 	; Basically to make sure this object didn't land on top of another
-	LDY #$0d	 
-PRG011_AF57:
-	CPY <Temp_Var13
-	BEQ PRG011_AF81		; If this is the object we're working with, skip this loop!
+;	LDY #$0d	 
+;PRG011_AF57:
+;	CPY <Temp_Var13
+;	BEQ PRG011_AF81		; If this is the object we're working with, skip this loop!
 
-	LDA Map_Objects_IDs,Y 	; Get this object ID
-	BEQ PRG011_AF81	 	; If 0 (no object here), jump to PRG011_AF81
-	CMP #MAPOBJ_CANOE
-	BGE PRG011_AF81	 	; If ID >= MAPOBJ_CANOE (canoe), jump to PRG011_AF81
+;	LDA Map_Objects_IDs,Y 	; Get this object ID
+;	BEQ PRG011_AF81	 	; If 0 (no object here), jump to PRG011_AF81
+;	CMP #MAPOBJ_CANOE
+;	BGE PRG011_AF81	 	; If ID >= MAPOBJ_CANOE (canoe), jump to PRG011_AF81
 
-	LDA Map_March_Count,Y
-	BNE PRG011_AF81
+;	LDA Map_March_Count,Y ; if other item is still marching, ignore
+;	BNE PRG011_AF81
 
-	LDA Map_Object_ActY,Y
-	CMP Map_Object_ActY,X
-	BNE PRG011_AF81		; Y's are different, OK
+;	LDA Map_Object_ActY,Y
+;	CMP Map_Object_ActY,X
+;	BNE PRG011_AF81		; Y's are different, OK
 
-	LDA Map_Object_ActXH,Y
-	CMP Map_Object_ActXH,X
-	BNE PRG011_AF81		; X hi's are different, OK
+;	LDA Map_Object_ActXH,Y
+;	CMP Map_Object_ActXH,X
+;	BNE PRG011_AF81		; X hi's are different, OK
 
-	LDA Map_Object_ActX,Y
-	CMP Map_Object_ActX,X
-	BEQ PRG011_AF85		; Gah, everything matched!  I'm standing on something, jump to PRG011_AF85
+;	LDA Map_Object_ActX,Y
+;	CMP Map_Object_ActX,X
+;	BEQ PRG011_AF85		; Gah, everything matched!  I'm standing on something, jump to PRG011_AF85
 
-PRG011_AF81:
-	DEY		 ; Y--
-	BNE PRG011_AF57	 ; While Y >= 0, loop!
+;PRG011_AF81:
+	;DEY		 ; Y--
+	;BNE PRG011_AF57	 ; While Y >= 0, loop!
 
-PRG011_AF84:
-	RTS		 ; Return
+;PRG011_AF84:
+;	RTS		 ; Return
 
+	.org $AF85   ; maintain alignment after code deletion above
+	
 PRG011_AF85:
 	; I landed on something, so I gotta re-march
 	LDA #$20
-	STA Map_March_Count,X	; Redo march
+	STA Map_March_Count,X	; Redo march for current object (X, Temp_Var13)
 
-	CPY #$01
+	CPY #$01                ; if Y=1, don't re-march it?
 	BEQ PRG011_AF93
 
-	LDA #$20	
+	LDA #$20	           ; Redo march for item we hit (Y)
 	STA Map_March_Count,Y
 
 PRG011_AF93:

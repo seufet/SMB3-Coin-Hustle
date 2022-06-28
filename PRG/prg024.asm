@@ -782,10 +782,39 @@ CoinHustlePerGameSetup:
 ; Tables for coin-related speed progression!
 Tbl_MaxWalkSpeed:	.byte $10, $10, $14, $18, $18, $18, $18, $18
 Tbl_MaxRunSpeed:	.byte $18, $18, $1c, $20, $28, $30, $38, $40
+Tbl_HustlePMeter:	.byte $00, $01, $03, $07, $0f, $1f, $3f, $7f
 Tbl_CoinEatMask:	.byte $ff, $7f, $3f
 
 
 DoCoinHustle:
+
+; loop subtracting from the coin total until hitting zero
+; result is that for each 10 coins, HustleFactor increases by 1
+; e.g. 0-9 coins = 0 hustle, 10-19 = 1, 70+ = 7
+CalcHustleFactor:
+	LDA #$00           ; clear old value
+	STA HustleFactor
+	
+	LDY #$07
+	LDA Inventory_Coins
+
+HustleLoop:
+	SEC
+	SUB #10
+	BCC HustleLoopDone ; if we have crossed zero, exit loop
+	INC HustleFactor
+	
+	DEY
+	BNE HustleLoop ; loop until 0
+
+HustleLoopDone:
+	; prevents regular P-meter code from running
+	; and populates P meter based on coins!
+	LDA #$10
+	STA Player_PMeterCnt 
+	LDY HustleFactor
+	LDA Tbl_HustlePMeter,Y
+	STA Player_Power
 
 ; Ensures that Leaf/Tanooki can always fly
 InfiniteFlight:
