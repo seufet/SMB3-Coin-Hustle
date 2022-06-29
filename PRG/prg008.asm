@@ -1016,55 +1016,67 @@ Sound_FullPowerRing:
 PRG008_A4E4: 
 	LDA Player_Power
 	CMP #$7f
-	BNE PRG008_A4F8	 ; If Player_Power <> $7F (max power), jump to PRG008_A4F8
+	BNE PowerRingExit	 ; If Player_Power <> $7F (max power), jump to PRG008_A4F8
 
 	JSR Sound_FullPowerRing	 ; Play full power ringing sound
+	
+PowerRingExit:
+	RTS
 
-	LDA Player_RunFlag
-	BEQ PRG008_A4F8	 ; If Player is not running, jump to PRG008_A4F8
+; Coin Hustle - code below maintains P-Meter, deleted
 
-	LDY #$10	 ; Y = $10
-	JMP PRG008_A51A	 ; Jump to PRG008_A51A
+;	LDA Player_Power
+;	CMP #$7f
+;	BNE PRG008_A4F8	 ; If Player_Power <> $7F (max power), jump to PRG008_A4F8
+;
+;	JSR Sound_FullPowerRing	 ; Play full power ringing sound
+;
+;	LDA Player_RunFlag
+;	BEQ PRG008_A4F8	 ; If Player is not running, jump to PRG008_A4F8
+;
+;	LDY #$10	 ; Y = $10
+;	JMP PRG008_A51A	 ; Jump to PRG008_A51A
+;
+;PRG008_A4F8:
+;	;LDA Player_PMeterCnt;
+;	BNE PRG008_A523	 ; If Player_PMeterCnt <> 0, jump to PRG008_A523
+;
+;	SEC		 ; Set carry
+;	ROL Player_Power ; Player_Power is shifted left 1, its old bit 7 in the carry, and '1' introduced at bit 0
+;
+;	LDA Player_RunFlag
+;	BNE PRG008_A50C	 ; If Player is running, jump to PRG008_A50C
+;
+;	ROR Player_Power ; Restore Player_Power
+;	LSR Player_Power ; Shift it 1 to the right
+;
+;PRG008_A50C:
+;	LDY #$18	 ; Y = $18
+;
+;	LDA Player_Power
+;	BEQ PRG008_A520	 ; If Player_Power = 0, jump to PRG008_A520
+;
+;	LDA Player_RunFlag
+;	BEQ PRG008_A51A	 ; If Player is not running, jump to PRG008_A51A
+;
+;	LDY #$08	 ; Otherwise, Y = $8
+;
+;PRG008_A51A:
+;	STY Player_PMeterCnt	 ; Set Player_PMeterCnt
+;
+;	JMP PRG008_A523	 ; Jump to PRG008_A523
+;
+;PRG008_A520:
+;	STA Player_FlyTime ; Clear Player_FlyTime
+;
+;PRG008_A523:
+;
+;	LDA #$00
+;	STA Player_RunFlag ; Player_RunFlag = 0
+;
+;	RTS		 ; Return
 
-PRG008_A4F8:
-	LDA Player_PMeterCnt
-	BNE PRG008_A523	 ; If Player_PMeterCnt <> 0, jump to PRG008_A523
-
-	SEC		 ; Set carry
-	ROL Player_Power ; Player_Power is shifted left 1, its old bit 7 in the carry, and '1' introduced at bit 0
-
-	LDA Player_RunFlag
-	BNE PRG008_A50C	 ; If Player is running, jump to PRG008_A50C
-
-	ROR Player_Power ; Restore Player_Power
-	LSR Player_Power ; Shift it 1 to the right
-
-PRG008_A50C:
-	LDY #$18	 ; Y = $18
-
-	LDA Player_Power
-	BEQ PRG008_A520	 ; If Player_Power = 0, jump to PRG008_A520
-
-	LDA Player_RunFlag
-	BEQ PRG008_A51A	 ; If Player is not running, jump to PRG008_A51A
-
-	LDY #$08	 ; Otherwise, Y = $8
-
-PRG008_A51A:
-	STY Player_PMeterCnt	 ; Set Player_PMeterCnt
-
-	JMP PRG008_A523	 ; Jump to PRG008_A523
-
-PRG008_A520:
-	STA Player_FlyTime ; Clear Player_FlyTime
-
-PRG008_A523:
-
-	LDA #$00
-	STA Player_RunFlag ; Player_RunFlag = 0
-
-	RTS		 ; Return
-
+	.org $a529    ; Coin Hustle - maintain alignment with code deleted above
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Level_SetPlayerPUpPal
@@ -2363,35 +2375,47 @@ PRG008_AB62:
 	; LDY #Pad_Input
 	
 	; y=0x18
-	LDY #PLAYER_TOPWALKSPEED
+	;LDY #PLAYER_TOPWALKSPEED
 
+	;BIT <Pad_Holding ; sets bit 6 of <Pad_Holding to the overflow flag, which is then used to branch
+	;BVC PRG008_AB83	; If Player is NOT holding 'B', jump to PRG008_AB83
+
+	; Player is holding B...
+
+	;LDA <Player_InAir
+	;ORA Player_Slide
+	;BNE PRG008_AB78	 ; If Player is mid air or sliding, jump to PRG008_AB78 = not eligible for P-meter bump
+
+	;LDA <Temp_Var3 ; x velocity magnitude
+	;CMP #PLAYER_TOPRUNSPEED
+	;BMI PRG008_AB78	 ; If Player's X Velocity magnitude is less than PLAYER_TOPRUNSPEED, jump to PRG008_AB78
+
+	; Player is going fast enough while holding B on the ground; flag running - this really means running at speed=40
+	;INC Player_RunFlag ; Player_RunFlag = 1
+
+;PRG008_AB78:
+	; Start with top run speed
+	;LDY #PLAYER_TOPRUNSPEED ; Y = PLAYER_TOPRUNSPEED
+
+	;LDA Player_Power
+	;CMP #$7f
+	;BNE PRG008_AB83	 ; If Player has not hit full power, jump to PRG008_AB83
+
+	; Otherwise, top power speed
+	;LDY #PLAYER_TOPPOWERSPEED	 ; Y = PLAYER_TOPPOWERSPEED
+
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	; Coin Hustle - custom max speed code replacing that commented out above
+	LDY CoinHustle_TopWalkSpeed   ; walk speed is default, set in PRG24
+	
 	BIT <Pad_Holding ; sets bit 6 of <Pad_Holding to the overflow flag, which is then used to branch
 	BVC PRG008_AB83	; If Player is NOT holding 'B', jump to PRG008_AB83
 
 	; Player is holding B...
+	LDY CoinHustle_TopRunningSpeed   ; if holding B, can go up to top running speed
+	JMP PRG008_AB83
 
-	LDA <Player_InAir
-	ORA Player_Slide
-	BNE PRG008_AB78	 ; If Player is mid air or sliding, jump to PRG008_AB78
-
-	LDA <Temp_Var3 ; x velocity magnitude
-	CMP #PLAYER_TOPRUNSPEED
-	BMI PRG008_AB78	 ; If Player's X Velocity magnitude is less than PLAYER_TOPRUNSPEED, jump to PRG008_AB78
-
-	; Player is going fast enough while holding B on the ground; flag running - this really means running at speed=40
-	INC Player_RunFlag ; Player_RunFlag = 1
-
-PRG008_AB78:
-	; Start with top run speed
-	LDY #PLAYER_TOPRUNSPEED ; Y = PLAYER_TOPRUNSPEED
-
-	LDA Player_Power
-	CMP #$7f
-	BNE PRG008_AB83	 ; If Player has not hit full power, jump to PRG008_AB83
-
-	; Otherwise, top power speed
-	LDY #PLAYER_TOPPOWERSPEED	 ; Y = PLAYER_TOPPOWERSPEED
-
+	.org $AB83 ; Coin Hustle - maintain alignment
 PRG008_AB83:
 	STY <Temp_Var14	 ; Store top speed -> Temp_Var14
 

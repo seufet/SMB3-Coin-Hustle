@@ -849,8 +849,8 @@ CineKing_DialogState:	; Toad & King Cinematic: When 1, we're doing the text vers
 	Player_Slopes:		.ds 3	; for sloped levels only (3 bytes allocated, but only one actually used)
 				; *NOTE: Code at PRG030_9EDB clears Player_Slopes+1 and Player_Slopes+2, but these are never used!
 
-				.ds 1	; $E9 unused
-				.ds 1	; $EA unused
+	CoinHustle_TopWalkSpeed:			.ds 1	; $E9 Coin Hustle - previously unused 
+	CoinHustle_TopRunningSpeed:			.ds 1	; $EA Coin Hustle - previously unused
 
 	Player_XStart:		.ds 1	; Set to Player's original starting X position (also used to check if level has initialized)
 
@@ -1696,7 +1696,10 @@ CHNGTILE_GIANTBRICKFIX	= $18	; Giant World brick restore (small Mario hit giant 
 	Player_QueueSuit:	.ds 1	; Queues a suit change (values like Player_Suit, but add 1, EXCEPT: $0F = Statue enable, $40 = Splash, $80 = Kuribo's Shoe)
 	Player_mGoomba:		.ds 1	; Player is caught by a micro Goomba (jump short)
 	Player_Statue:		.ds 1	; Player is in Tanooki Statue mode; counts down to zero
-	Player_RunFlag:		.ds 1	; Set while Player is actually considered "running" (holding down B and at enough speed; doesn't persist)
+	
+	; Coin Hustle - Player_RunFlag unused
+	.ds 1 ; Unused...
+	;Player_RunFlag:		.ds 1	; Set while Player is actually considered "running" (holding down B and at enough speed; doesn't persist)
 	Player_Bounce:		.ds 1	; Set to cause block bounce (upper 4 bits specifies what kind of block will be bounced)
 	Player_BounceDir:	.ds 1	; Direction of Player bounce -- 0 = Down, 1 = Up, 2 = Left, 3 = Right
 	Player_BounceObj:	.ds 1	; Set if it was a kicked shelled object that hit the bounce block (i.e. don't bounce the Player if the object is the one that hit) 
