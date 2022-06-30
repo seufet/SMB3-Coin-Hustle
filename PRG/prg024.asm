@@ -811,10 +811,17 @@ HustleLoopDone:
 	; prevents regular P-meter code from running
 	; and populates P meter based on coins!
 	LDA #$10
-	STA Player_PMeterCnt 
+	STA Player_PMeterCnt  ; can likely ditch now...
 	LDY HustleFactor
 	LDA Tbl_HustlePMeter,Y
 	STA Player_Power
+	LDA Tbl_MaxWalkSpeed,Y
+	STA <CoinHustle_TopWalkSpeed
+	LDA Tbl_MaxRunSpeed,Y
+	STA <CoinHustle_TopRunSpeed
+
+; CoinHustle_TopWalkSpeed:			.ds 1	; $E9 Coin Hustle - previously unused 
+; CoinHustle_TopRunningSpeed:			.ds 1	; $EA Coin Hustle - previously unused
 
 ; Ensures that Leaf/Tanooki can always fly
 InfiniteFlight:
@@ -822,8 +829,8 @@ InfiniteFlight:
 	LDA PowerUp_Ability,Y	; Get "ability" flags for this power up
 	AND #$01
 	BEQ EatCoin	 	; If power up does not have flight ability, jump ahead
-	LDA #$7f	; we'll eventually mod PRG8 not to check PlayerPower for flight as Power will be coin-determined
-	STA Player_Power ; Player_Power = $7F
+	;LDA #$7f	; we'll eventually mod PRG8 not to check PlayerPower for flight as Power will be coin-determined
+	;STA Player_Power ; Player_Power = $7F
 	LDA #$ff
 	STA Player_FlyTime ; Player_FlyTime = $FF
 

@@ -930,7 +930,8 @@ PRG008_A472:
 
 	JSR Player_DrawAndDoActions29	; Draw Player and perform reactions to various things (coin heaven, pipes, etc lots more)
 	JSR Player_ControlJmp	 	; Controllable actions
-	JSR Player_PowerUpdate	 	; Update "Power Meter"
+	;JSR Player_PowerUpdate	 	; Update "Power Meter"
+	JSR CheckPowerRing          ; Coin Hustle - replaces Player_PowerUpdate call above
 	JSR Player_DoScrolling	 	; Scroll relative to Player against active rules
 	JSR AScrlURDiag_HandleWrap 	; Handle the diagonal autoscroller wrapping
 	JSR Player_DetectSolids		; Handle solid tiles, including slopes if applicable
@@ -976,30 +977,36 @@ PRG008_A4BE:
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Player_PowerUpdate
+; Player_PowerUpdate - Coin Hustle - this code now unused as marked below...
+; All we need to do is check if we should play the P-meter-is-full ring...
 ;
 ; Handles updating the "Power Meter" as appropriate,
 ; and plays the annoying "ringing" noise :)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Player_PowerUpdate:
-	LDY Player_FlyTime	 
-	BEQ PRG008_A4E4	 ; If Player is not flying (or at least high-speed jumping), jump to PRG008_A4E4
+; START UNUSED OLD P-METER CODE
+;Player_PowerUpdate:
+;	LDY Player_FlyTime	 
+;	BEQ PRG008_A4E4	 ; If Player is not flying (or at least high-speed jumping), jump to PRG008_A4E4
 
-	CPY #$ff
-	BEQ Sound_FullPowerRing	 ; If Player_FlyTime = $FF (P-Wing active), jump to Sound_FullPowerRing
+;	CPY #$ff
+;	BEQ Sound_FullPowerRing	 ; If Player_FlyTime = $FF (P-Wing active), jump to Sound_FullPowerRing
 
-	LDA <Counter_1
-	AND #$01
-	BEQ PRG008_A4D5	 ; Every other tick, jump to PRG008_A4D5
+;	LDA <Counter_1
+;	AND #$01
+;	BEQ PRG008_A4D5	 ; Every other tick, jump to PRG008_A4D5
 
-	DEY			 
-	STY Player_FlyTime ; Player_FlyTime-- every other frame
+;	DEY			 
+;	STY Player_FlyTime ; Player_FlyTime-- every other frame
 
-PRG008_A4D5:
-	TYA		 ; Y (Player_FlyTime) -> A 
-	BNE Sound_FullPowerRing	 ; If Player_FlyTime <> 0, jump to Sound_FullPowerRing
+;PRG008_A4D5:
+;	TYA		 ; Y (Player_FlyTime) -> A 
+;	BNE Sound_FullPowerRing	 ; If Player_FlyTime <> 0, jump to Sound_FullPowerRing
+;
+;	STY Player_Power ; Otherwise, clear Player_Power
 
-	STY Player_Power ; Otherwise, clear Player_Power
+; END UNUSED OLD P-METER CODE
+	
+	.org $a4db     ; Coin Hustle - maintain alignment after code deletion above
 
 Sound_FullPowerRing:
 
@@ -1013,7 +1020,8 @@ Sound_FullPowerRing:
 ; Coin Hustle
 ; player neither flying nor high-speed jumping
 
-PRG008_A4E4: 
+PRG008_A4E4: ; old label - Coin Hustle
+CheckPowerRing: 
 	LDA Player_Power
 	CMP #$7f
 	BNE PowerRingExit	 ; If Player_Power <> $7F (max power), jump to PRG008_A4F8
@@ -2406,13 +2414,13 @@ PRG008_AB62:
 
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; Coin Hustle - custom max speed code replacing that commented out above
-	LDY CoinHustle_TopWalkSpeed   ; walk speed is default, set in PRG24
+	LDY <CoinHustle_TopWalkSpeed   ; walk speed is default, set in PRG24
 	
 	BIT <Pad_Holding ; sets bit 6 of <Pad_Holding to the overflow flag, which is then used to branch
 	BVC PRG008_AB83	; If Player is NOT holding 'B', jump to PRG008_AB83
 
 	; Player is holding B...
-	LDY CoinHustle_TopRunningSpeed   ; if holding B, can go up to top running speed
+	LDY <CoinHustle_TopRunSpeed   ; if holding B, can go up to top running speed
 	JMP PRG008_AB83
 
 	.org $AB83 ; Coin Hustle - maintain alignment
@@ -2614,6 +2622,8 @@ PRG008_AC41:
 	LDA Player_StarInv
 	BEQ PRG008_AC6C	 ; If Player is not invincible by star, jump to PRG008_AC6C
 
+	;----------- Star Active -----------;
+	; Lines below just stop Mario from somersaulting with Star while at full P-meter, small, holding something, Frog...
 	LDA Player_Power
 	CMP #$7f
 	BEQ PRG008_AC6C	 ; If Player is at max power, jump to PRG008_AC6C
@@ -2658,15 +2668,19 @@ PRG008_AC73:
 	STA Player_WagCount	 ; Player_WagCount = 0
 	STA Player_AllowAirJump	 ; Player_AllowAirJump = 0
 
-	LDA Player_Power
-	CMP #$7f
-	BNE PRG008_AC9E		; If Player is not at max power, jump to PRG008_AC9E
+	JMP PRG008_AC9E       ; Coin Hustle - removing some flying-time code here
 
-	LDA Player_FlyTime
-	BNE PRG008_AC9E	 	; If Player still has flight time left, jump to PRG008_AC9E
+	;LDA Player_Power
+	;CMP #$7f
+	;BNE PRG008_AC9E		; If Player is not at max power, jump to PRG008_AC9E
 
-	LDA #$80
-	STA Player_FlyTime	; Otherwise, Player_FlyTime = $80
+	;LDA Player_FlyTime
+	;BNE PRG008_AC9E	 	; If Player still has flight time left, jump to PRG008_AC9E
+
+	;LDA #$80
+	;STA Player_FlyTime	; Otherwise, Player_FlyTime = $80
+
+	.org $ac93    ; Coin Hustle - maintain alignment with deleted code above
 
 PRG008_AC9E:
 	LDA <Player_InAir

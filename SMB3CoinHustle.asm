@@ -842,15 +842,15 @@ CineKing_DialogState:	; Toad & King Cinematic: When 1, we're doing the text vers
 	Player_SprWorkL:	.ds 1	; Sprite work address low
 	Player_SprWorkH:	.ds 1	; Sprite work address high
 
-				.ds 1	; $E3 unused
+	CoinHustle_TopWalkSpeed:			.ds 1	; $E3 - Coin Hustle - previously unused 
 
 	Level_TileOff:		.ds 1	; Tile mem offset
 	Level_Tile:		.ds 1	; Temporary holding point for a detected tile index
 	Player_Slopes:		.ds 3	; for sloped levels only (3 bytes allocated, but only one actually used)
 				; *NOTE: Code at PRG030_9EDB clears Player_Slopes+1 and Player_Slopes+2, but these are never used!
 
-	CoinHustle_TopWalkSpeed:			.ds 1	; $E9 Coin Hustle - previously unused 
-	CoinHustle_TopRunningSpeed:			.ds 1	; $EA Coin Hustle - previously unused
+				.ds 1	; $e9 - mystery use
+	CoinHustle_TopRunSpeed:			.ds 1	; $EA Coin Hustle - previously unused
 
 	Player_XStart:		.ds 1	; Set to Player's original starting X position (also used to check if level has initialized)
 
