@@ -3555,16 +3555,18 @@ PRG008_B079:
 PRG008_B082:
 	LDA Player_FlyTime
 	ORA Player_WagCount
-	BEQ PRG008_B09F	 ; If flying or fluttering, jump to PRG008_B09F (RTS)
+	BEQ PRG008_B09F	 ; If not flying or fluttering, jump to PRG008_B09F (RTS)
 
 	LDY #-1		 ; Y = -1
 	LDA <Player_XVel
-	BPL PRG008_B095	 ; If Player_XVel >= 0, jump to PRG008_B095
+	BPL DecelFlyingPlayer	 ; If Player_XVel >= 0, jump to DecelFlyingPlayer
 
 	LDY #1		 ; Y = 1
 	JSR Negate	 ; Negate Player_XVel (get absolute value)
 
-PRG008_B095:
+; This is what slowly decelerates the flying player down to dx=max walk speed - 1
+; This was dx=23 in original, for coin hustle it is dynamic: CoinHustle_TopWalkSpeed
+DecelFlyingPlayer:
 
 	; Y = -1 and Player_XVel >= 0
 	;    OR

@@ -4829,7 +4829,7 @@ TILE18_BOUNCEDBLOCK	= $C2	; Temporary tile for when block has been bounced
 	.incchr "CHR/chr002.pcx"
 	.incchr "CHR/chr003.pcx"
 	.incchr "CHR/chr004.pcx"
-	.incchr "CHR/chr005.pcx"
+	.incchr "CHR/chr005.pcx"    ; P-Wing as shown in Princess Letter, non-transition World Map
 	.incchr "CHR/chr006.pcx"
 	.incchr "CHR/chr007.pcx"
 	.incchr "CHR/chr008.pcx"
@@ -4918,7 +4918,7 @@ TILE18_BOUNCEDBLOCK	= $C2	; Temporary tile for when block has been bounced
 	.incchr "CHR/chr089.pcx"
 	.incchr "CHR/chr090.pcx"
 	.incchr "CHR/chr091.pcx"
-	.incchr "CHR/chr092.pcx"
+	.incchr "CHR/chr092.pcx"      ; map items - e.g. mushroom, hammer suit, anchor but only as shown in transition to Item Menu on World Map.
 	.incchr "CHR/chr093.pcx"
 	.incchr "CHR/chr094.pcx"
 	.incchr "CHR/chr095.pcx"

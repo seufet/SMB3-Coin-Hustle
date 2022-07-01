@@ -5151,6 +5151,10 @@ PRG009_B922:
 	LDA Level_AScrlSelect
 	JSR DynJump
 
+	; Coin Hustle - Remove those that prevent the player from moving on
+	; Yes: 3, 4, 5
+	; No: 0, 1, 2 - may need new level 5-9, but will need to test!
+
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
 	.word AutoScroll_Horizontal	; 0 Generally for non-stop horizontal levels, uses movement commands; most complex type
 	.word AutoScroll_Horizontal	; 1 Same as type zero, except accesses $1x Level_AScrlVar
