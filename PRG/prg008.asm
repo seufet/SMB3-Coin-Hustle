@@ -3571,10 +3571,13 @@ PRG008_B095:
 	; Y = 1 and Player_XVel < 0
 	;    (but magnitude is in 'A' either way)
 
-	CMP #PLAYER_TOPWALKSPEED	
+	; Coin Hustle - compare to dynamic max walk speed instead of fixed one
+	CMP <CoinHustle_TopWalkSpeed
+	;CMP #PLAYER_TOPWALKSPEED	
+	
 	BLS PRG008_B09F	 ; If X Velocity magnitude is < PLAYER_TOPWALKSPEED, jump to PRG008_B09F (RTS)
 
-	; Otherwise add 'Y', which gives a slow acceleration up to that speed when in air as raccoon
+	; Otherwise add 'Y', which gives a slow deceleration down to that speed when in air with suit that can fly
 	TYA
 	ADD <Player_XVel
 	STA <Player_XVel
