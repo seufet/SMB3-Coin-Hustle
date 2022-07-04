@@ -148,7 +148,7 @@ ToadItem_PalPerItem:
 	.byte $17	; 5: Tanooki
 	.byte $27	; 6: Hammer
 	.byte $36	; 7: Judgems
-	.byte $27	; 8: P-Wing
+	.byte $30	; 8: P-Wing   ; original: $27
 	.byte $30	; 9: Star
 	.byte $07	; A: Anchor
 	.byte $36	; B: Hammer

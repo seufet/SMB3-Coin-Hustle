@@ -109,9 +109,18 @@ PRG027_A052:
 
 	RTS		 ; Return
 
+; original letter palette`
+;Letter_Palette:
+;	.byte $0F, $0F, $30, $3C, $0F, $10, $35, $30, $0F, $00, $10, $30, $0F, $1B, $2C, $3C
+;	.byte $0F, $30, $16, $0F, $0F, $16, $25, $30, $0F, $30, $21, $0F, $0F, $30, $27, $0F
+
+; coin hustle palette
+; palette $0F, $16, $25, $30 = red coin
+; ? reg coin= $0, $0f, $36, $27
+; 2nd row, 3rd set of 4 = item palette!
 Letter_Palette:
 	.byte $0F, $0F, $30, $3C, $0F, $10, $35, $30, $0F, $00, $10, $30, $0F, $1B, $2C, $3C
-	.byte $0F, $30, $16, $0F, $0F, $16, $25, $30, $0F, $30, $21, $0F, $0F, $30, $27, $0F
+	.byte $0F, $30, $16, $0F, $0F, $16, $25, $30, $0F, $30, $21, $0F, $0F, $0f, $36, $27
 
 
 TAndK_FadeOutAndGetItem:
@@ -165,10 +174,20 @@ LetterItem_ByWorld:
 	; Letter's included item patterns and attributes for sprite left and right.
 	; Of note, all item types are defined (although mushroom and frog suit will
 	; errorenously appear in a blue palette; didn't check if a good one exists.)
+	; Note: access is via item idx minus 1, so P-Wing is at index 7, not 8
 Letter_ItemPat_L:	.byte $45, $47, $5D, $41, $43, $4B, $75, $51, $69, $55, $59, $61, $49
 Letter_ItemPat_R:	.byte $45, $47, $5F, $41, $43, $4B, $77, $53, $69, $57, $5B, $63, $4D
+
+; original attributes
+;Letter_ItemAttr_L:	.byte $02, $03, $03, $02, $03, $03, $00, $03, $00, $03, $03, $03, $03
+;Letter_ItemAttr_R:	.byte $42, $43, $03, $42, $43, $43, $00, $03, $40, $03, $03, $03, $03
+
+; Coin hustle attributes
+; P-wing (position 7) $04 --> $01; palttte $0, $16, $25, $30 = red coin
+; ? reg coin= $0, $0f, $36, $27
 Letter_ItemAttr_L:	.byte $02, $03, $03, $02, $03, $03, $00, $03, $00, $03, $03, $03, $03
 Letter_ItemAttr_R:	.byte $42, $43, $03, $42, $43, $43, $00, $03, $40, $03, $03, $03, $03
+
 
 	; Eyes/Mouth sprite pattern use to animate the Princess "talking"
 Princess_FacePatterns:
@@ -257,13 +276,13 @@ PRG027_A181:
 	LDA Princess_FacePatterns,Y
 	STA Sprite_RAM+$A1
 
+	; Flash included item on and off
 	LDA <Counter_1
 	AND #$18
-	BEQ PRG027_A1A7	 ; Periodically jump to PRG027_A1A7 (RTS)
+	BEQ PRG027_A1A7	 ; Periodically jump to PRG027_A1A7 (RTS) - don't draw
 
 	LDY <CineKing_Var	 ; Y = CineKing_Var (item included with letter)
-
-	; Flash included item
+	
 	LDA Letter_ItemPat_L-1,Y
 	STA Sprite_RAM+$BD
 	LDA Letter_ItemPat_R-1,Y
@@ -1751,7 +1770,7 @@ InitPals_Per_MapPUp:
 	.byte $FF, $30, $36, $0F	; 6 Hammer
 	.byte $FF, $30, $36, $0F	; 7 Judgems
 	.byte $FF, $16, $36, $0F	; 8 P-Wing
-
+	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Setup_PalData
 ;

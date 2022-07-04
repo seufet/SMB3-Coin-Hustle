@@ -92,7 +92,8 @@ PRG026_A0A6:
 PRG026_A0C3:
 	TAX		 	; X = A (InvStart_Item + offset)
 	LDA Inventory_Items,X	; Get this item -> A
-	JMP InvItem_SetColor 	; Jump to InvItem_SetColor
+	;JMP InvItem_SetColor 	; Jump to InvItem_SetColor
+	JMP FixInventoryPal ; Coin Hustle
 
 PRG026_A0CA:
 	RTS		 ; Return
@@ -725,7 +726,8 @@ PRG026_A468:
 
 PRG026_A476:
 	LDA Inventory_Items,X	 	; A = next item
-	JSR InvItem_SetColor	 	; Properly set colors for this item
+	;JSR InvItem_SetColor	 	; Properly set colors for this item
+	JSR FixInventoryPal ; Coin Hustle
 
 Inventory_ForceUpdate_AndFlip:
 	LDA #$0c	 		
@@ -799,7 +801,8 @@ PRG026_A4D9:
 PRG026_A4EB:
 	LDA Inventory_Items,Y	; Get the selected item
 	BEQ PRG026_A4B4	 	; If item is zero (empty slot), jump to PRG026_A4B4 (moves inventory slot back)
-	JSR InvItem_SetColor 	; Otherwise, set the color...
+	;JSR InvItem_SetColor 	; Otherwise, set the color...
+	JSR FixInventoryPal ; Coin Hustle
 	JMP PRG026_A511	 	; Then jump to PRG026_A511
 
 PRG026_A4F6:
@@ -824,10 +827,11 @@ PRG026_A50E:
 PRG026_A511:
 	JMP Inv_Display_Hilite	 ; Highlight item and don't come back!
 
-InvItem_Pal:
+InvItem_Pal: ; coin hustle - what does this do???
 	; Per-Item LUT
 	;	0    1    2    3    4    5    6    7    8    9   10   11   12   13
 	.byte $16, $16, $2A, $2A, $2A, $17, $27, $16, $27, $16, $07, $17, $27, $27
+	;.byte $16, $16, $2A, $2A, $2A, $17, $27, $27, $27, $16, $07, $17, $27, $27
 
 InvItem_SetColor:
 	; Inventory is open ... assign proper color for item that is highlighted
@@ -836,7 +840,9 @@ InvItem_SetColor:
 	BEQ PRG026_A539	 	; If Level_Tileset = 7 (Toad House), jump to PRG026_A539 (RTS)
 
 	TAX		 	; A = Current inventory item selected
-	LDA InvItem_Pal,X	; Get the color that will be used for this item
+	;LDA InvItem_Pal,X	; Get the color that will be used for this item
+	TAX
+	LDA $0f
 	STA Palette_Buffer+30	; Store it into the palette buffer
  
 	LDA #$36
@@ -903,7 +909,8 @@ InvItem_PerPowerUp_Palette:
 	.byte $17, $36, $0F, $FF	; Tanooki Suit
 	.byte $30, $36, $0F, $FF	; Hammer Suit
 	.byte $30, $36, $0F, $FF	; Judgems Cloud
-	.byte $16, $36, $0F, $FF	; P-Wing
+	.byte $0f, $0f, $0F, $FF	; P-Wing
+	;.byte $16, $36, $0F, $FF	; P-Wing
 
 InvItem_PerPowerUp_Palette2:
 	; Luigi
@@ -915,7 +922,8 @@ InvItem_PerPowerUp_Palette2:
 	.byte $17, $36, $0F, $FF	; Tanooki Suit
 	.byte $30, $36, $0F, $FF	; Hammer Suit
 	.byte $30, $36, $0F, $FF	; Judgems Cloud
-	.byte $1A, $36, $0F		; P-Wing (note lack of 4th byte)
+	;.byte $1A, $36, $0F		; P-Wing (note lack of 4th byte)
+	.byte $0f, $0f, $0F		; P-Wing (note lack of 4th byte)
 
 
 Inv_UseItem_Powerup:
@@ -1385,6 +1393,21 @@ PRG026_A876:
 
 PRG026_A88E:
 	LDX Inventory_Items,Y	; X = currently highlighted item
+
+	; coin hustle
+	TXA
+	JSR FixInventoryPal
+	
+	; coin hustle - hack palette if we're a coin...
+	;CPX #$07
+	;BNE NotCoin 
+	;JSR FIP_Coin
+	;JMP KeepOn
+	
+;NotCoin:
+	
+
+;KeepOn:
 
 	; Use palette 3 for both
 	LDA #$03
@@ -3736,4 +3759,51 @@ PRG026_B506:
 PRG026_B51F:
 	RTS		 ; Return
 
-; Rest of ROM bank was empty...
+; Rest of ROM bank was empty...ooh, lots of room here!
+
+; Fix the palette for coin item
+FixInventoryPal:
+; Inventory is open ... assign proper color for item that is highlighted
+	LDX Level_Tileset	; X = Level_Tileset
+	CPX #$07	 	
+	BEQ FIP_Done	 	; If Level_Tileset = 7 (Toad House), jump to PRG026_A539 (RTS)
+
+	TAX		 	; A = Current inventory item selected
+	CMP #$08 ; Coin (former P-Wing)
+	BEQ FIP_Coin
+	
+	; not a coin
+	LDA #$30
+	STA Palette_Buffer+29	; Store it into the palette buffer
+	
+	LDA InvItem_Pal,X	; Get the color that will be used for this item
+	STA Palette_Buffer+30	; Store it into the palette buffer
+	
+	LDA #$0f
+	STA Palette_Buffer+31	; Store it into the palette buffer
+	
+	LDA #$36
+	STA Palette_Buffer+3	; Ensure status bar color in there!
+
+	LDA #$06		
+	STA <Graphics_Queue	; Update the palette when capable
+	RTS
+
+; fix the palette for coins, since I'm apparently too dumb to understand how this is really supposed to work...
+FIP_Coin:
+	;LDA InvItem_Pal,X	; Get the color that will be used for this item
+	LDA #$0f
+	STA Palette_Buffer+29	; Store it into the palette buffer
+	LDA #$30
+	STA Palette_Buffer+30	; Store it into the palette buffer
+	LDA #$27
+	STA Palette_Buffer+31	; Store it into the palette buffer
+ 
+	LDA #$36
+	STA Palette_Buffer+3	; Ensure status bar color in there!
+
+	LDA #$06		
+	STA <Graphics_Queue	; Update the palette when capable
+
+FIP_Done:
+	RTS		 ; Return
