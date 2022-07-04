@@ -870,7 +870,8 @@ Inv_UseItem:
 	.word Inv_UseItem_Powerup	; Tanooki Suit
 	.word Inv_UseItem_Powerup	; Hammer Suit
 	.word Inv_UseItem_Powerup	; Judgems Cloud
-	.word Inv_UseItem_Powerup	; P-Wing
+	;.word Inv_UseItem_Powerup	; 8, P-Wing --> Coin Hustle coin
+	.word UseItemHustleCoin	; 8, P-Wing --> Coin Hustle coin
 	.word Inv_UseItem_Starman	; Starman
 	.word Inv_UseItem_Anchor	; Anchor
 	.word Inv_UseItem_Hammer	; Hammer
@@ -887,7 +888,8 @@ InvItem_PerPowerUp_L1Sound:
 	.byte SND_LEVELPOOF	; Tanooki Suit
 	.byte SND_LEVELPOWER	; Hammer Suit
 	.byte SND_LEVELPOWER	; Judgems Cloud
-	.byte SND_LEVELPOWER	; P-Wing
+	;.byte SND_LEVELPOWER	; P-Wing
+	.byte SND_LEVELCOIN     ; 8, Coin Hustle Coin
 
 InvItem_PerPowerUp_Disp:
 	; Powerup to display on map per powerup used
@@ -900,6 +902,7 @@ InvItem_PerPowerUp_Disp:
 	; bytes are actually used.  "Power-up zero" (which I guess would be small Mario) is 
 	; present here, likely for simplicity, but it is also not used (there is no "power down")
 	; See also PRG027 InitPals_Per_MapPUp
+	; Note that coin hustle coin, unlike the P-Wing it replaces, won't change Mario's appearance.
 InvItem_PerPowerUp_Palette:
 	; Mario
 	.byte $16, $36, $0F, $FF	; "Empty Slot" (shouldn't ever be used)
@@ -910,8 +913,7 @@ InvItem_PerPowerUp_Palette:
 	.byte $17, $36, $0F, $FF	; Tanooki Suit
 	.byte $30, $36, $0F, $FF	; Hammer Suit
 	.byte $30, $36, $0F, $FF	; Judgems Cloud
-	.byte $0f, $0f, $0F, $FF	; P-Wing
-	;.byte $16, $36, $0F, $FF	; P-Wing
+	.byte $16, $36, $0F, $FF	; P-Wing
 
 InvItem_PerPowerUp_Palette2:
 	; Luigi
@@ -923,8 +925,7 @@ InvItem_PerPowerUp_Palette2:
 	.byte $17, $36, $0F, $FF	; Tanooki Suit
 	.byte $30, $36, $0F, $FF	; Hammer Suit
 	.byte $30, $36, $0F, $FF	; Judgems Cloud
-	;.byte $1A, $36, $0F		; P-Wing (note lack of 4th byte)
-	.byte $0f, $0f, $0F		; P-Wing (note lack of 4th byte)
+	.byte $1A, $36, $0F		; P-Wing (note lack of 4th byte)
 
 
 Inv_UseItem_Powerup:
@@ -982,6 +983,7 @@ PRG026_A5D9:
 PRG026_A608:
 	STA World_Map_Power,X	 	; Update appropriate player's "Map Power Up"
 
+; Coin Hustle item enters here...
 PRG026_A60B:
 	LDA #$14	 
 	STA Map_Powerup_Poof	 	; Map_Powerup_Poof = $14
@@ -1395,20 +1397,6 @@ PRG026_A876:
 PRG026_A88E:
 	LDX Inventory_Items,Y	; X = currently highlighted item
 
-	; coin hustle
-	;TXA
-	;JSR FixInventoryPal
-	
-	; coin hustle - hack palette if we're a coin...
-	;CPX #$07
-	;BNE NotCoin 
-	;JSR FIP_Coin
-	;JMP KeepOn
-	
-;NotCoin:
-	
-
-;KeepOn:
 
 	; Use palette 3 for both
 	LDA #$03
@@ -3813,3 +3801,19 @@ FIP_Coin:
 
 FIP_Done:
 	RTS		 ; Return
+
+
+; Use the Coin Hustle coin!
+; Just play a sound and add the coins!
+UseItemHustleCoin:
+	; Play the coin sound!
+	LDA #SND_LEVELCOIN
+	STA Sound_QLevel1
+	
+	; Add some coins! Note we have no bounds checking or Luigi handling...
+	LDA Inventory_Coins
+	ADD #10
+	STA Inventory_Coins
+
+	; re-join the regular power up item code to use the item up, shift the others, etc
+	JMP PRG026_A60B
