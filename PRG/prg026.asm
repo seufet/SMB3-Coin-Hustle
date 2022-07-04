@@ -92,8 +92,8 @@ PRG026_A0A6:
 PRG026_A0C3:
 	TAX		 	; X = A (InvStart_Item + offset)
 	LDA Inventory_Items,X	; Get this item -> A
-	;JMP InvItem_SetColor 	; Jump to InvItem_SetColor
-	JMP FixInventoryPal ; Coin Hustle
+	JMP InvItem_SetColor 	; Jump to InvItem_SetColor
+	;JMP FixInventoryPal ; Coin Hustle
 
 PRG026_A0CA:
 	RTS		 ; Return
@@ -726,8 +726,8 @@ PRG026_A468:
 
 PRG026_A476:
 	LDA Inventory_Items,X	 	; A = next item
-	;JSR InvItem_SetColor	 	; Properly set colors for this item
-	JSR FixInventoryPal ; Coin Hustle
+	JSR InvItem_SetColor	 	; Properly set colors for this item
+	;JSR FixInventoryPal ; Coin Hustle
 
 Inventory_ForceUpdate_AndFlip:
 	LDA #$0c	 		
@@ -801,8 +801,8 @@ PRG026_A4D9:
 PRG026_A4EB:
 	LDA Inventory_Items,Y	; Get the selected item
 	BEQ PRG026_A4B4	 	; If item is zero (empty slot), jump to PRG026_A4B4 (moves inventory slot back)
-	;JSR InvItem_SetColor 	; Otherwise, set the color...
-	JSR FixInventoryPal ; Coin Hustle
+	JSR InvItem_SetColor 	; Otherwise, set the color...
+	;JSR FixInventoryPal ; Coin Hustle
 	JMP PRG026_A511	 	; Then jump to PRG026_A511
 
 PRG026_A4F6:
@@ -827,8 +827,11 @@ PRG026_A50E:
 PRG026_A511:
 	JMP Inv_Display_Hilite	 ; Highlight item and don't come back!
 
-InvItem_Pal: ; coin hustle - what does this do???
+InvItem_Pal: 
 	; Per-Item LUT
+	; coin hustle - what does this do???
+	; This is used to substitute one color in the regular map-item palette for each item, so green
+	; for leaf, gold for coin, etc.
 	;	0    1    2    3    4    5    6    7    8    9   10   11   12   13
 	.byte $16, $16, $2A, $2A, $2A, $17, $27, $16, $27, $16, $07, $17, $27, $27
 	;.byte $16, $16, $2A, $2A, $2A, $17, $27, $27, $27, $16, $07, $17, $27, $27
@@ -840,9 +843,7 @@ InvItem_SetColor:
 	BEQ PRG026_A539	 	; If Level_Tileset = 7 (Toad House), jump to PRG026_A539 (RTS)
 
 	TAX		 	; A = Current inventory item selected
-	;LDA InvItem_Pal,X	; Get the color that will be used for this item
-	TAX
-	LDA $0f
+	LDA InvItem_Pal,X	; Get the color that will be used for this item
 	STA Palette_Buffer+30	; Store it into the palette buffer
  
 	LDA #$36
@@ -1395,8 +1396,8 @@ PRG026_A88E:
 	LDX Inventory_Items,Y	; X = currently highlighted item
 
 	; coin hustle
-	TXA
-	JSR FixInventoryPal
+	;TXA
+	;JSR FixInventoryPal
 	
 	; coin hustle - hack palette if we're a coin...
 	;CPX #$07
@@ -3761,7 +3762,12 @@ PRG026_B51F:
 
 ; Rest of ROM bank was empty...ooh, lots of room here!
 
-; Fix the palette for coin item
+
+; Coin Hustle - code below not used but left for reference (for now)
+; Was trying to understand how to make graphics for new coin map item work, wound
+; up hacking palette but ultimately got the gist of how to do it the "right" way
+; 
+; NOT USED - Fix the palette for coin item
 FixInventoryPal:
 ; Inventory is open ... assign proper color for item that is highlighted
 	LDX Level_Tileset	; X = Level_Tileset
