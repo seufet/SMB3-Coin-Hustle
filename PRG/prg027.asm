@@ -118,10 +118,13 @@ PRG027_A052:
 ; palette $0F, $16, $25, $30 = red coin
 ; ? reg coin= $0, $0f, $36, $27
 ; 2nd row, 3rd set of 4 = item palette!
+; $03 = Coin palette $f, $36, $27, $f
+; $02 = ? Kuribo palette? $f, $f, $30, $2a
+; Note: 1st value in each set of 4 will be bg color, so ignored...
 Letter_Palette:
 	.byte $0F, $0F, $30, $3C, $0F, $10, $35, $30, $0F, $00, $10, $30, $0F, $1B, $2C, $3C
 	;.byte $0F, $30, $16, $0F, $0F, $16, $25, $30, $0F, $30, $21, $0F, $0F, $0f, $36, $27
-	.byte $0F, $30, $16, $0F, $0F, $16, $25, $30, $0F, $30, $21, $0F, $0F, $36, $27, $0f
+	.byte $0F, $30, $16, $0F, $0F, $16, $25, $30, $0F, $30, $2a, $0f, $0F, $36, $27, $0f
 
 
 TAndK_FadeOutAndGetItem:
@@ -164,13 +167,24 @@ PRG027_A0B2:
 PRG027_A0CD:
 	RTS		 ; Return
 
-	; Same as Inventory_Items IDs
-	; 0 = None
+	; Inventory_Items: 
+	; 0 = Empty
+	; 1 = Mushroom
+	; 2 = Flower
+	; 3 = Leaf
+	; 4 = Frog
+	; 5 = Tanooki
+	; 6 = Hammer
 	; 7 = Judgem's cloud
 	; 8 = P-Wing
+	; 9 = Star
+	; A = Anchor
+	; B = Hammer
+	; C = Warp Whistle
 	; D = Music Box
 LetterItem_ByWorld:
-	.byte $08, $07, $0D, $08, $07, $08, $00
+	;.byte $08, $07, $0D, $08, $07, $08, $00
+	.byte $0A, $07, $0D, $08, $07, $08, $00
 
 	; Letter's included item patterns and attributes for sprite left and right.
 	; Of note, all item types are defined (although mushroom and frog suit will
@@ -186,8 +200,10 @@ Letter_ItemPat_R:	.byte $45, $47, $5F, $41, $43, $4B, $77, $53, $69, $57, $5B, $
 ; Coin hustle attributes
 ; P-wing (position 7) $04 --> $01; palttte $0, $16, $25, $30 = red coin
 ; ? reg coin= $0, $0f, $36, $27
-Letter_ItemAttr_L:	.byte $02, $03, $03, $02, $03, $03, $00, $03, $00, $03, $03, $03, $03
-Letter_ItemAttr_R:	.byte $42, $43, $03, $42, $43, $43, $00, $03, $40, $03, $03, $03, $03
+;Letter_ItemAttr_L:	.byte $02, $03, $03, $02, $03, $03, $00, $03, $00, $03, $03, $03, $03
+;Letter_ItemAttr_R:	.byte $42, $43, $03, $42, $43, $43, $00, $03, $40, $03, $03, $03, $03
+Letter_ItemAttr_L:	.byte $02, $03, $03, $02, $03, $03, $00, $03, $00, $02, $03, $03, $03
+Letter_ItemAttr_R:	.byte $42, $43, $03, $42, $43, $43, $00, $03, $40, $02, $03, $03, $03
 
 
 	; Eyes/Mouth sprite pattern use to animate the Princess "talking"

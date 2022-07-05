@@ -833,7 +833,7 @@ InvItem_Pal:
 	; This is used to substitute one color in the regular map-item palette for each item, so green
 	; for leaf, gold for coin, etc.
 	;	0    1    2    3    4    5    6    7    8    9   10   11   12   13
-	.byte $16, $16, $2A, $2A, $2A, $17, $27, $16, $27, $16, $07, $17, $27, $27
+	.byte $16, $16, $2A, $2A, $2A, $17, $27, $16, $27, $16, $2a, $17, $27, $27
 	;.byte $16, $16, $2A, $2A, $2A, $17, $27, $27, $27, $16, $07, $17, $27, $27
 
 InvItem_SetColor:
