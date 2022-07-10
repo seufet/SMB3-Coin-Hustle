@@ -928,6 +928,10 @@ InvItem_PerPowerUp_Palette2:
 	.byte $1A, $36, $0F		; P-Wing (note lack of 4th byte)
 
 
+; XXX investigate whether we can/should use this for the Kuribo's shoe (A, replacing anchor) as it functions like a power-up
+; Could swap indexes with the Hustle Coin (8, replacing P-wing), which does not
+; However, doesn't seem to be a big deal unless we run out of space for custom code, just less elegant
+; 
 Inv_UseItem_Powerup:
 	LDA InvHilite_Item
 	ADD InvStart_Item
@@ -975,11 +979,15 @@ PRG026_A5D9:
 
 	CMP #$07
 	BEQ PRG026_A60B	 		; If Map_Power_Disp = $07 (Judgem's Cloud), jump to PRG026_A60B (does NOT update Player's map power!)
-
-	CMP #$08	 
-	BEQ PRG026_A608	 		; If Map_Power_Disp = $08 (Kuribo), jump to PRG026_A60B (does NOT update Player's map power!)
-	NOP
-	NOP
+	
+	;CMP #$08	 
+	;BEQ PRG026_A608	 		; If Map_Power_Disp = $08 (Kuribo), jump to PRG026_A60B (does NOT update Player's map power!)
+	;NOP
+	;NOP
+	
+	JMP $a608 ; pass deleted code above and maintain alignment
+	.org $a608
+	
 
 PRG026_A608:
 	STA World_Map_Power,X	 	; Update appropriate player's "Map Power Up"
@@ -3830,6 +3838,18 @@ UseItemKuribo:
 	; Show the Kuribo!!!
 	LDA #$08
 	STA Map_Power_Disp
+	
+	; Load the colors for this power-up into the palette buffer
+	LDA #$30
+	STA Palette_Buffer+17
+	LDA #$2a
+	STA Palette_Buffer+18
+	LDA #$0f
+	STA Palette_Buffer+19
+
+	; Queue palette update
+	LDA #$06
+	STA <Graphics_Queue
 	
 	; To-do...
 	; Change Mario sprite to show shoe

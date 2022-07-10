@@ -2900,6 +2900,12 @@ Map_Power_Attrib_F1:
 	; This table defines attributes to be applied per power-up
 	; to the sprites making up the Player; only actually used
 	; to apply horizontal flips here and there...
+	
+	; TSS - note that sprite palettes (bits 0-1) should remain 0 here or it will
+	; break cycling the palette when a star is used with that power-up. 
+	; So, any palette-loading code should put the suit's colors in positions 16-19, i.e. 
+	; the first sprite palette
+	
 	; Byte order is upper left, upper right, lower left, lower right
 	; Note that Small Mario / Judgems do not have a visible "upper"
 	.byte $00, $40, $00, $00	; Small
@@ -2910,7 +2916,7 @@ Map_Power_Attrib_F1:
 	.byte $00, $40, $00, $40	; Tanooki Suit
 	.byte $00, $40, $00, $00	; Hammer Suit
 	.byte $00, $40, $00, $40	; Judgems Cloud
-	.byte $00, $00, $03, $03	; Coin Hustle - Kuribo!
+	.byte $00, $00, $00, $00	; Coin Hustle - Kuribo!
 	;.byte $00, $40, $00, $00	; P-Wing
 
 Map_Power_Attrib_F2:
@@ -2923,7 +2929,7 @@ Map_Power_Attrib_F2:
 	.byte $00, $40, $00, $40	; Tanooki Suit
 	.byte $00, $40, $40, $40	; Hammer Suit
 	.byte $00, $40, $00, $40	; Judgems Cloud
-	.byte $00, $00, $03, $03	; Coin Hustle - Kuribo!
+	.byte $00, $00, $00, $00	; Coin Hustle - Kuribo!
 	;.byte $00, $40, $00, $00	; P-Wing
 
 Map_Marker_MorL:
