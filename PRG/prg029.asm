@@ -263,7 +263,7 @@ M12ASegData23:
 	
 	; Nintendo did a minor trick here to keep the offset down to one byte...
 	; - They have 81 frames total, with 6 patterns each
-	; - Dividing by 2 (to be fixed later) means the offset into the pattern lookup table is reduced to 3
+	; - Dividing by 2 (to be fixed later) means the offset into the pattern lookup table is reduced to
 	; - 3 * 81 = 243, which fits the 1 byte offset
 	; But, for some reason, everything is off by 4?  The SPPF function below compensates for this, and 
 	; PRG029_CF1E loads from 4 bytes shy of the proper address.  Maybe this was a mistake?  
@@ -311,8 +311,10 @@ PF14:	.byte $39, $39, $F1, $3B, $3B, $F1
 PF15:	.byte $01, $03, $F1, $05, $07, $09
 PF16:	.byte $0B, $0D, $F1, $0F, $29, $2B
 PF17:	.byte $2D, $2F, $F1, $19, $1B, $1D
-PF18:	.byte $2D, $2F, $F1, $A9, $AB, $F1
-PF19:	.byte $2D, $2F, $F1, $A9, $AD, $F1
+;PF18:	.byte $2D, $2F, $F1, $A9, $AB, $F1   ; Kuribo's shoe big ? coin hustle - frame 0 
+;PF19:	.byte $2D, $2F, $F1, $A9, $AD, $F1   ; Kuribo's shoe big ? coin hustle - frame 1
+PF18:	.byte $2D, $2F, $F1, $69, $6B, $F1   ; Coin hustle - Kuribo's shoe big ? coin hustle - frame 0 
+PF19:	.byte $2D, $2F, $F1, $69, $6D, $F1   ; Coin hustle - Kuribo's shoe big ? coin hustle - frame 1
 PF1A	.byte $01, $03, $05, $07, $09, $0B
 PF1B:	.byte $0D, $0F, $39, $3B, $3D, $3F
 PF1C:	.byte $19, $1B, $1D, $1F, $21, $23
@@ -356,8 +358,10 @@ PF3F:	.byte $F1, $F1, $F1, $01, $03, $F1
 PF40:	.byte $F1, $F1, $F1, $19, $1B, $F1
 PF41:	.byte $F1, $F1, $F1, $21, $23, $F1
 PF42:	.byte $F1, $F1, $F1, $1D, $1F, $F1
-PF43:	.byte $05, $07, $F1, $A9, $AB, $F1
-PF44:	.byte $05, $07, $F1, $A9, $AD, $F1
+;PF43:	.byte $05, $07, $F1, $A9, $AB, $F1     ; Kuribo's shoe small - frame 0
+;PF44:	.byte $05, $07, $F1, $A9, $AD, $F1	   ; Kuribo's shoe small - frame 1
+PF43:	.byte $05, $07, $F1, $69, $6B, $F1     ; Coin hustle - Kuribo's shoe small - frame 0
+PF44:	.byte $05, $07, $F1, $69, $6D, $F1	   ; Coin hustle - Kuribo's shoe small - frame 1
 PF45:	.byte $29, $2B, $F1, $01, $03, $05
 PF46:	.byte $F1, $F1, $F1, $25, $27, $F1
 PF47:	.byte $F1, $F1, $F1, $29, $2B, $F1
@@ -480,10 +484,11 @@ PRG029_CF09:
 	AND #$03	 ; Cap it 0-3 in any case (select one of the four sprite palettes, basically)
 
 PRG029_CF0B:
+	; Temp_var1 used to set player sprite attributes (palette, flip, bg priority)
 	STA <Temp_Var1	 ; Store cycle tick into Temp_Var1 (0 if not invincible, sprite palette 0)
 
 	LDA Level_PipeMove
-	LDA Player_Behind
+	LDA Player_Behind   ; should this be ORA? Over-writes prior value...
 	ORA Player_SandSink
 	BEQ PRG029_CF1E	 ; If Player is behind the scenes, jump to PRG029_CF1E
 
@@ -493,7 +498,7 @@ PRG029_CF0B:
 	STA <Temp_Var1
 
 PRG029_CF1E:
-	LDA #LOW(SPPF_Table-4)
+	LDA #LOW(SPPF_Table-4)    ; LOW() and HIGH() apparently grab the low or high byte of a word
 	STA <Player_SprWorkL
 	LDA #HIGH(SPPF_Table-4)
 	STA <Player_SprWorkH

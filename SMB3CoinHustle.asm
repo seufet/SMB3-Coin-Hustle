@@ -4824,18 +4824,18 @@ TILE18_BOUNCEDBLOCK	= $C2	; Temporary tile for when block has been bounced
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; CHR ROM BEGINS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	.incchr "CHR/chr000.pcx"
+	.incchr "CHR/chr000.pcx"    ; racoon --> +2
 	.incchr "CHR/chr001.pcx"
-	.incchr "CHR/chr002.pcx"
-	.incchr "CHR/chr003.pcx"
-	.incchr "CHR/chr004.pcx"
+	.incchr "CHR/chr002.pcx"    ; racoon carrying shell --> +2
+	.incchr "CHR/chr003.pcx"    ; racoon jumping, no p-speed
+	.incchr "CHR/chr004.pcx"    ; mushroom/flower/star, blocks, vine, poof, score --> +3
 	.incchr "CHR/chr005.pcx"    ; P-Wing as shown in Princess Letter, non-transition World Map
 	.incchr "CHR/chr006.pcx"
-	.incchr "CHR/chr007.pcx"
+	.incchr "CHR/chr007.pcx"    ; sky mushroom/flower/star patterns, end level cards --> +5
 	.incchr "CHR/chr008.pcx"
 	.incchr "CHR/chr009.pcx"
 	.incchr "CHR/chr010.pcx"
-	.incchr "CHR/chr011.pcx"
+	.incchr "CHR/chr011.pcx"    ; Kuribo's shoe sprites... --> +4
 	.incchr "CHR/chr012.pcx"
 	.incchr "CHR/chr013.pcx"
 	.incchr "CHR/chr014.pcx"
@@ -4876,7 +4876,7 @@ TILE18_BOUNCEDBLOCK	= $C2	; Temporary tile for when block has been bounced
 	.incchr "CHR/chr047.pcx"
 	.incchr "CHR/chr048.pcx"
 	.incchr "CHR/chr049.pcx"
-	.incchr "CHR/chr050.pcx"
+	.incchr "CHR/chr050.pcx" ; pause, end 1-up, time up
 	.incchr "CHR/chr051.pcx"
 	.incchr "CHR/chr052.pcx"
 	.incchr "CHR/chr053.pcx"
@@ -4886,18 +4886,18 @@ TILE18_BOUNCEDBLOCK	= $C2	; Temporary tile for when block has been bounced
 	.incchr "CHR/chr057.pcx"
 	.incchr "CHR/chr058.pcx"
 	.incchr "CHR/chr059.pcx"
-	.incchr "CHR/chr060.pcx"
+	.incchr "CHR/chr060.pcx"   ; alternate for +3!!!
 	.incchr "CHR/chr061.pcx"
 	.incchr "CHR/chr062.pcx"
 	.incchr "CHR/chr063.pcx"
-	.incchr "CHR/chr064.pcx"
-	.incchr "CHR/chr065.pcx"
-	.incchr "CHR/chr066.pcx"
-	.incchr "CHR/chr067.pcx"
-	.incchr "CHR/chr068.pcx"
+	.incchr "CHR/chr064.pcx"    ; shrinking Mario, running/pipe tanooki --> +2
+	.incchr "CHR/chr065.pcx"    ; tanooki statue --> +2
+	.incchr "CHR/chr066.pcx"    ; tanooki carrying shell
+	.incchr "CHR/chr067.pcx"    ; jumping tanooki
+	.incchr "CHR/chr068.pcx"    ; hammer mario --> +2
 	.incchr "CHR/chr069.pcx"
 	.incchr "CHR/chr070.pcx"
-	.incchr "CHR/chr071.pcx"
+	.incchr "CHR/chr071.pcx"    ; jumping hammer --> +2
 	.incchr "CHR/chr072.pcx"
 	.incchr "CHR/chr073.pcx"
 	.incchr "CHR/chr074.pcx"
@@ -4906,19 +4906,19 @@ TILE18_BOUNCEDBLOCK	= $C2	; Temporary tile for when block has been bounced
 	.incchr "CHR/chr077.pcx"
 	.incchr "CHR/chr078.pcx"
 	.incchr "CHR/chr079.pcx"
-	.incchr "CHR/chr080.pcx"
-	.incchr "CHR/chr081.pcx"
-	.incchr "CHR/chr082.pcx"
-	.incchr "CHR/chr083.pcx"
-	.incchr "CHR/chr084.pcx"
+	.incchr "CHR/chr080.pcx"    ; frog suit, land --> +2
+	.incchr "CHR/chr081.pcx"    ; frog suit swimming --> +2
+	.incchr "CHR/chr082.pcx"    ; mario carrying shell --> +2
+	.incchr "CHR/chr083.pcx"    ; small mario with frog/tanooki/hammer suits, water sploosh/bubble --> +2
+	.incchr "CHR/chr084.pcx"    ; big mario --> +2
 	.incchr "CHR/chr085.pcx"
 	.incchr "CHR/chr086.pcx"
-	.incchr "CHR/chr087.pcx"
+	.incchr "CHR/chr087.pcx"    ; big mario P-speed jumping --> +2
 	.incchr "CHR/chr088.pcx"
 	.incchr "CHR/chr089.pcx"
 	.incchr "CHR/chr090.pcx"
 	.incchr "CHR/chr091.pcx"
-	.incchr "CHR/chr092.pcx"      ; map items - e.g. mushroom, hammer suit, anchor but only as shown in transition to Item Menu on World Map.
+	.incchr "CHR/chr092.pcx"      ; map items - e.g. mushroom, hammer suit, anchor - black/bg view used when NOT selected on item menu!
 	.incchr "CHR/chr093.pcx"
 	.incchr "CHR/chr094.pcx"
 	.incchr "CHR/chr095.pcx"

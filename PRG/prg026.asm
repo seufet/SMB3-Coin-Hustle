@@ -871,9 +871,9 @@ Inv_UseItem:
 	.word Inv_UseItem_Powerup	; Hammer Suit
 	.word Inv_UseItem_Powerup	; Judgems Cloud
 	;.word Inv_UseItem_Powerup	; 8, P-Wing --> Coin Hustle coin
-	.word UseItemHustleCoin	; 8, P-Wing --> Coin Hustle coin
+	.word UseItemHustleCoin	; 8, Coin Hustle: P-Wing --> Coin Hustle coin
 	.word Inv_UseItem_Starman	; Starman
-	.word Inv_UseItem_Anchor	; Anchor
+	.word UseItemKuribo	; 10, Coin Hustle: Anchor --> Kuribo; prior anchor code now unused btw...
 	.word Inv_UseItem_Hammer	; Hammer
 	.word Inv_UseItem_WarpWhistle	; Warp Whistle
 	.word Inv_UseItem_MusicBox	; Music Box
@@ -977,8 +977,9 @@ PRG026_A5D9:
 	BEQ PRG026_A60B	 		; If Map_Power_Disp = $07 (Judgem's Cloud), jump to PRG026_A60B (does NOT update Player's map power!)
 
 	CMP #$08	 
-	BNE PRG026_A608	 		; If Map_Power_Disp <> $08 (P-Wing), jump to PRG026_A608
-	LDA #$03	 		; For P-Wing, "Map Power Up" is set as Leaf
+	BEQ PRG026_A608	 		; If Map_Power_Disp = $08 (Kuribo), jump to PRG026_A60B (does NOT update Player's map power!)
+	NOP
+	NOP
 
 PRG026_A608:
 	STA World_Map_Power,X	 	; Update appropriate player's "Map Power Up"
@@ -3814,6 +3815,29 @@ UseItemHustleCoin:
 	LDA Inventory_Coins
 	ADD #10
 	STA Inventory_Coins
+
+	; re-join the regular power up item code to use the item up, shift the others, etc
+	JMP PRG026_A60B
+	
+; Use the Coin Hustle Kuribo Shoe item!
+; Play the power-up sound and then will need to figure out how to make the shoe thing work on level load...
+; Along with the Kuribo coin-related powers...
+UseItemKuribo:
+	; Play the power up sound
+	LDA #SND_LEVELPOWER
+	STA Sound_QLevel1
+	
+	; Show the Kuribo!!!
+	LDA #$08
+	STA Map_Power_Disp
+	
+	; To-do...
+	; Change Mario sprite to show shoe
+	; Player_Kuribo = $577, but cleared before level load so will need to modify that...
+	; There's code in the regular use item function to set palette for the power ups...can likely steal/adapt
+	; InvItem_PerPowerUp_Disp - per power-up, used to populate Map_Power_Disp
+	; Map_Power_Disp - what to show on map
+	; World_Map_Power,X - the actual world map power for each player
 
 	; re-join the regular power up item code to use the item up, shift the others, etc
 	JMP PRG026_A60B

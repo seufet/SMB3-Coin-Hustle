@@ -2881,7 +2881,8 @@ Map_Power_Pats_F1:
 	.byte $AD, $AD, $C1, $C1	; Tanooki Suit
 	.byte $AB, $AB, $CD, $CF	; Hammer Suit
 	.byte $27, $27, $9F, $9F	; Judgems Cloud
-	.byte $B9, $B9, $8D, $8F	; P-Wing
+	.byte $27, $27, $23, $25	; Coin Hustle - Kuribo!
+	;.byte $B9, $B9, $8D, $8F	; P-Wing
 
 Map_Power_Pats_F2:
 	.byte $27, $27, $2F, $2D	; Small
@@ -2892,7 +2893,8 @@ Map_Power_Pats_F2:
 	.byte $BD, $BD, $C3, $C3	; Tanooki Suit
 	.byte $AB, $AB, $CF, $CD	; Hammer Suit
 	.byte $27, $27, $9F, $9F	; Judgems Cloud
-	.byte $B9, $B9, $A7, $A9	; P-Wing
+	.byte $27, $27, $23, $25	; Coin Hustle - Kuribo!
+	;.byte $B9, $B9, $A7, $A9	; P-Wing
 
 Map_Power_Attrib_F1:
 	; This table defines attributes to be applied per power-up
@@ -2908,7 +2910,8 @@ Map_Power_Attrib_F1:
 	.byte $00, $40, $00, $40	; Tanooki Suit
 	.byte $00, $40, $00, $00	; Hammer Suit
 	.byte $00, $40, $00, $40	; Judgems Cloud
-	.byte $00, $40, $00, $00	; P-Wing
+	.byte $00, $00, $03, $03	; Coin Hustle - Kuribo!
+	;.byte $00, $40, $00, $00	; P-Wing
 
 Map_Power_Attrib_F2:
 	; Frame 2; see Map_Power_Attrib_F1
@@ -2920,7 +2923,8 @@ Map_Power_Attrib_F2:
 	.byte $00, $40, $00, $40	; Tanooki Suit
 	.byte $00, $40, $40, $40	; Hammer Suit
 	.byte $00, $40, $00, $40	; Judgems Cloud
-	.byte $00, $40, $00, $00	; P-Wing
+	.byte $00, $00, $03, $03	; Coin Hustle - Kuribo!
+	;.byte $00, $40, $00, $00	; P-Wing
 
 Map_Marker_MorL:
 	.byte $63, $4F		; The (M), (L) small markers

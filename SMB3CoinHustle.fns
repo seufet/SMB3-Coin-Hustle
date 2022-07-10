@@ -11102,6 +11102,7 @@ M2BSegHedr04                     = $B449
 PRG026_B114                      = $B114
 PRG026_B07D                      = $B07D
 GraphicsBuf_Prep_And_WaitVSync   = $96E5
+UseItemKuribo                    = $B570
 PRG026_A50E                      = $A50E
 Ending_FadeIn                    = $B933
 KS_BonkMario_HitFloor            = $B568

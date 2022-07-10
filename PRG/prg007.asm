@@ -4152,7 +4152,7 @@ PRG007_B4EB:
 	; meaning when they added the "American" rule of returning to "super"
 	; state, it didn't have the suit sprite graphics available!
 
-LostShoe_Pattern:	.byte $A9, $AB	; 0
+LostShoe_Pattern:	.byte $69, $6B	; Coin Hustle - formerly $a9, $ab
 			.byte $39, $39	; 1
 			.byte $3B, $3B	; 2
 			.byte $3D, $3D	; 3

@@ -499,20 +499,29 @@ PRG008_A242:
 
 	JSR Level_InitAction_Do	; Do whatever action this level wants at the start, if any
 
-	LDA Map_Power_Disp
-	CMP #$08
-	BNE PRG008_A277	 ; If Map_Power_Disp <> 8 (P-Wing), jump to PRG008_A277
-
-	; Coin Hustle - Code below is called on level load and enables P-Wing:
+	; Coin Hustle - Code below was called on level load to enable P-Wing;
+	; we use it to enable kuribo!
 	; Player_Power --> #$7f; Player_FlyTime --> #$ff
 
+	LDA Map_Power_Disp
+	CMP #$08
+	BNE PRG008_A277	 ; If Map_Power_Disp <> 8 (Kuribo), jump to PRG008_A277
+
+	; enable kuribo's shoe!
+	LDA #$01
+	STA Player_Kuribo
+
 	; Max "Power"
-	LDA #$7f	
-	STA Player_Power ; Player_Power = $7F
+	;LDA #$7f	
+	;STA Player_Power ; Player_Power = $7F
 
 	; Infinite flight time
-	LDA #$ff
-	STA Player_FlyTime ; Player_FlyTime = $FF
+	;LDA #$ff
+	;STA Player_FlyTime ; Player_FlyTime = $FF
+	
+	JMP $a277 ; skip removed code
+	
+	.org $a277
 
 PRG008_A277:
 	JSR LevelInit_EnableSlopes	 ; Enable slopes if style calls for it
