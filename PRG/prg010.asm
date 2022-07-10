@@ -2893,7 +2893,7 @@ Map_Power_Pats_F2:
 	.byte $BD, $BD, $C3, $C3	; Tanooki Suit
 	.byte $AB, $AB, $CF, $CD	; Hammer Suit
 	.byte $27, $27, $9F, $9F	; Judgems Cloud
-	.byte $27, $27, $23, $25	; Coin Hustle - Kuribo!
+	.byte $27, $27, $23, $27	; Coin Hustle - Kuribo!
 	;.byte $B9, $B9, $A7, $A9	; P-Wing
 
 Map_Power_Attrib_F1:
