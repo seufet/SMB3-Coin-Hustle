@@ -1659,6 +1659,8 @@ Map_NoLoseTurnTiles_End
 
 MO_DoLevelClear:
 
+	JSR DrawToadHouseItem
+
 	; Check if this one of the tiles that does not cause a Player to lose their turn
 	JSR Map_GetTile	 	; Get current tile Player is standing on
 
@@ -2134,7 +2136,7 @@ PRG011_ABF9:
 	STA Sprite_RAM+$69
 	STA Sprite_RAM+$75
 	STA Sprite_RAM+$79
-
+	
 	RTS		 ; Return
 
 

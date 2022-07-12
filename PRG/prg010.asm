@@ -2849,8 +2849,14 @@ PRG010_CEF4:
 WorldMap_UpdateAndDraw:
 	LDY Player_Current 	; Y = Player_Current
 
-	LDA Map_UnusedPlayerVal2,Y	; A = Map_UnusedPlayerVal2
-	STA <Temp_Var3		; Stored into Temp_Var3
+	;LDA Map_UnusedPlayerVal2,Y	; A = Map_UnusedPlayerVal2
+	;STA <Temp_Var3		; Stored into Temp_Var3
+
+	; Coin hustle - unused code above replaced with check for drawing Toad House power up
+	JSR DrawToadHouseItem
+	NOP ; maintain alignment
+	NOP
+	
 	JMP Map_DrawPlayer	; Draw Player sprite on map
 
 World_Map_Max_PanR:
@@ -3952,15 +3958,146 @@ CheckToadHouseBail:
 ToadHouseBail:
 	; if toad house, for testing make first item a hustle coin
 	; we'll actually want to use real item logic here and provide a visual cue as to which item it was...
-	LDA #$08    
+	LDA #$0A  
 	STA Inventory_Items    
+	JSR THItem_SetColor
+	
+	; graphics...
+	LDA #$05
+	STA PatTable_BankSel+4
+	
+	; counter for how long to show the item
+	LDA #$50
+	STA $68
+	
+	; Save the world map x pos for when the animation starts, so it doesn't follow a moving Mario
+	; when control is restored!
+	LDA World_Map_X
+	STA $81
+	
+	; Bank swap
+	LDA #12
+	; xxx
+	
+	; JSR Map_PrepareLevel - or if side effects can just grab needed code for Toad House!
+	
+	; Bank swap back (if needed?)
+	
+	; Give real item
 	
 	LDA #$07
 	STA Map_Operation      ; clear this level!
 	
 	JMP WorldMap_UpdateAndDraw   ; end action, don't enter toad house!
+
+THItem_Pal: 
+	; Per-Item LUT
+	; This is used to substitute one color in the regular map-item palette for each item, so green
+	; for leaf, gold for coin, etc.
+	;	0    1    2    3    4    5    6    7    8    9   10   11   12   13
+	.byte $16, $16, $2A, $2A, $2A, $17, $27, $16, $27, $16, $2a, $17, $27, $27
+
+THItem_SetColor:
+	TAX		 	; A = Current inventory item selected
+	LDA THItem_Pal,X	; Get the color that will be used for this item
+	STA Palette_Buffer+30	; Store it into the palette buffer
+ 
+	LDA #$06		
+	STA <Graphics_Queue	; Update the palette when capable
+
+THSetColorDone:
+	RTS		 ; Return
+
+
+; Copied from PRG26, InvItem_Hilite_Layout
+TH_Item_Layout:
+	; Item sprite tiles layout when highlighted
+	; NOTE: See also InvItem_Tile_Layout
+	; NOTE: If both tile values are equal, the right
+	;        half is horizontally flipped
+	.byte $01, $01		; Empty
+	.byte $85, $85		; Super Mushroom
+	.byte $87, $87		; Fire Flower
+	.byte $9D, $9F		; Leaf
+	.byte $81, $81		; Frog Suit
+	.byte $83, $83		; Tanooki Suit
+	.byte $8B, $8B		; Hammer Suit
+	.byte $B5, $B7		; Judgems Cloud
+	.byte $91, $93		; P-Wing
+	.byte $A9, $A9		; Starman
+	.byte $95, $97		; Anchor
+	.byte $99, $9B		; Hammer
+	.byte $A1, $A3		; Warp Whistle
+	.byte $89, $8D		; Music Box
+
 	
+; Coin Hustle - Draw Toad House item above player if Toad House just cleared, else does nothing
+DrawToadHouseItem:
+	LDA $68
+	BEQ DTH_Nope  ; RTS if counter is zero
 	
+	DEC $68 ; count down...
+	
+	; item sprite rises up one block, then blinks
+	CMP #$40
+	BGE DTH_Rising
+	
+	; Blink on/off 8 frames at a time
+	AND #$08
+	BNE DTH_Blinking
+	
+DTH_Nope:
+	RTS
+
+	; Item has finished rising
+	; This logic could be tighter/more concise, I'm sure, but this works at least...
+DTH_Blinking:
+	LDA World_Map_Y
+	SUB #$20
+	STA Sprite_RAM+$10	; Store 'Y' position into left half
+	STA Sprite_RAM+$14	; Store 'Y' position into right half
+	JMP DTH_YDone
+
+	; Item still rising...
+DTH_Rising:
+	LDA World_Map_Y
+	SUB #$5f
+	ADD $68
+	STA Sprite_RAM+$10	; Store 'Y' position into left half
+	STA Sprite_RAM+$14	; Store 'Y' position into right half
+
+DTH_YDone:
+	; Use palette 3 for both
+	LDA #$03
+	STA Sprite_RAM+$12
+	STA Sprite_RAM+$16
+
+	; Index highlight tiles
+	LDA Inventory_Items   ; use item id as index into sprite layout table...
+	ASL A
+	TAX
+	LDA TH_Item_Layout,X
+	STA Sprite_RAM+$11
+	LDA TH_Item_Layout+1,X
+	STA Sprite_RAM+$15
+
+	LDA Sprite_RAM+$11
+	CMP Sprite_RAM+$15
+	BNE DrawTHNoHFlip	 	; If left half / right half tiles differ, jump to PRG026_A8B8
+
+	; Otherwise, a horizontal flip is applied to the right half
+	LDA Sprite_RAM+$16
+	ORA #$40	 	; H-Flip
+	STA Sprite_RAM+$16	
+
+DrawTHNoHFlip:
+	LDA $81 ; match Mario's x pos on world map!
+	STA Sprite_RAM+$13	; Highlight X for left
+	ADD #$08	 	; +8
+	STA Sprite_RAM+$17	; Highlight X for right
+
+DrawToadHouseItemDone:
+	RTS
 
 
 
