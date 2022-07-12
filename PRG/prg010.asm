@@ -919,7 +919,7 @@ Map_DoOperation:
 	.word MO_HandTrap	; E - Hand trap gotcha!
 
 	; NOTE: There is a Map_Operation $F (edge scroll) and Map_Operation $10 (enter level)
-	; that are not in this jump table, but handled explicitly...
+	; that are not in this jump table, but handled explicitly in PRG30, see PRG030_873F
 
 World5_Sky_CloudDeco:
 	; Sprite data of a single cloud over the lower world
@@ -2724,6 +2724,7 @@ PRG010_CE78:
 	AND #$80	 
 	BEQ PRG010_CEE1		; If neither of the two players are pressing the 'A' button jump to PRG010_CEE1
 
+	; Player IS pressing 'A' button here...
 	LDX Player_Current	; X = Player_Current
 	TXA		 
 	EOR #$01	 	
@@ -2747,6 +2748,7 @@ PRG010_CE78:
 	LDA #$12
 	STA <Map_Enter2PFlag	; Map_Enter2PFlag = $12 (enterint 2P Vs)
 
+; After going to CEBF above, jump back here if tile is enterable...common between 2p vs and normal level enter
 PRG010_CEA7:
 	LDA #$10
 	STA Map_Operation	; Map_Operation = $10 (begin "enter level" effect)
@@ -2770,8 +2772,10 @@ PRG010_CEBF:
 	AND #PAD_A	
 	BEQ PRG010_CEE1	 	; If Player is not pressing 'A', jump to PRG010_CEE1
 
-	LDA <World_Map_Tile
-	LDY #$1a	; Y = $1A (BUG!  Map_EnterSpecialTiles is much smaller than this, should be $0A!  Causes some bytes used for palette data to be considered!)
+	JMP CheckToadHouseBail
+	NOP
+;	LDA <World_Map_Tile
+;	LDY #$1a	; Y = $1A (BUG!  Map_EnterSpecialTiles is much smaller than this, should be $0A!  Causes some bytes used for palette data to be considered!)
 PRG010_CEC9:
 	CMP Map_EnterSpecialTiles,Y
 	BEQ PRG010_CEA7	 	; If this is one of the special enterable tiles, jump to PRG010_CEA7 (enter level!)
@@ -3934,6 +3938,30 @@ PRG010_D535:
 	STA <Graphics_Queue
 
 	RTS		 ; Return
+
+; Coin Hustle - Check for Toad House and terminate level entry if so
+CheckToadHouseBail:
+	LDA <World_Map_Tile
+	CMP #$50 ; toad house?
+	BEQ ToadHouseBail
+	LDY #$0a        ; not a toad house, continue normal logic
+	JMP PRG010_CEC9
+
+; If we try to enter a toad house, just take the item and nuke the toad house!
+; This saves time for speedrunning and makes toad house grabs more desirable, esp for tastier items!
+ToadHouseBail:
+	; if toad house, for testing make first item a hustle coin
+	; we'll actually want to use real item logic here and provide a visual cue as to which item it was...
+	LDA #$08    
+	STA Inventory_Items    
+	
+	LDA #$07
+	STA Map_Operation      ; clear this level!
+	
+	JMP WorldMap_UpdateAndDraw   ; end action, don't enter toad house!
+	
+	
+
 
 
 	; BEGIN UNUSED SPACE

@@ -971,12 +971,12 @@ PRG030_873F:
 	; Map_WarpWind_FX <> 3 or Map_Operation <> $D...
 
 	CPY #$04
-	BEQ PRG030_874F	 		; If Map_Operation <> $4, jump to PRG010_874F
+	BEQ PRG030_874F	 		; If Map_Operation == $4, jump to PRG010_874F
 
 	CPY #$0f	 
 	BLT WorldMap_Loop	 	; If Map_Operation < $F (edge scroll), jump to WorldMap_Loop
 
-	; Map_Operation >= $F...
+	; Map_Operation >= $F...edge scroll or enter level...
 
 	LDX Player_Current	
 	LDA Map_Player_SkidBack,X
@@ -1060,6 +1060,7 @@ PRG030_87A9:
 
 PRG030_87BD:
 	; Map_Operation >= $F...
+	; EnterLevel...enter level...???
 
 	JSR GraphicsBuf_Prep_And_WaitVSync	; Vertical sync
 

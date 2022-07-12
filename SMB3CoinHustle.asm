@@ -1114,7 +1114,7 @@ UPDATERASTER_32PIXSHOWSPR= $80	; If NOT set, hides sprites that fall beneath the
 	Map_EntTran_BVAddrH:	.ds 4	; $0447-$044A Each border's current high part of VRAM address
 	Map_EntTran_BVAddrL:	.ds 4	; $044B-$044E Each border's current low part of VRAM address
 	Map_EntTran_BorderLoop:	.ds 1	; Border loop counter 
-	Map_EntTran_Cnt:	.ds 1
+	Map_EntTran_Cnt:	.ds 1       ; TSS - set to #$30 when entering level...?
 	Map_EntTran_VAddrH:	.ds 1	; high part of VRAM address to modify
 	Map_EntTran_VAddrHAdj:	.ds 1	; An adjusted version of the high address as needed to wrap (used in removed "box out" version only)
 	Map_EntTran_VAddrL:	.ds 1	; low part of VRAM address to modify
