@@ -880,7 +880,7 @@ ToadHouse_Item2Inventory:
 	; Item offsets per Toad House type
 ToadHouse_ItemOff:
 	;	0   1    2    3    4    5    6
-	.byte $02, 03, $0A, $0A, $0A, $05, $08
+	.byte $02, $03, $0A, $0A, $0A, $05, $08
 
 	.byte $0B, $0E, $11
 

@@ -3945,6 +3945,41 @@ PRG010_D535:
 
 	RTS		 ; Return
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Custom Toad House code for Coin Hustle
+
+CH_ToadHouse_Item2Inventory:
+	.byte $0C, $08, $04, $05, $06, $04, $05, $06, $01, $02, $03, $04, $02, $03, $05
+
+	; Toad House items:
+	; 0 = Warp Whistle
+	; 1 = P-Wing
+	; 2 = Frog Suit
+	; 3 = Tanooki
+	; 4 = Hammer
+	; 5 = Frog
+	; 6 = Tanooki
+	; 7 = Hammer
+	; 8 = Mushroom
+	; 9 = Fire Flower
+	; 10 = Leaf
+
+	; Item offsets per Toad House type
+CH_ToadHouse_ItemOff:
+	;	0   1    2    3    4    5    6
+	.byte $02, $03, $0A, $0A, $0A, $05, $08
+
+	.byte $0B, $0E, $11   ; TSS - ? is this used??
+
+	; RAS: This is a large set and could have the same effect
+	; with just four items, so I wonder if there was a thought
+	; of having additional items at some point?
+CH_ToadHouse_RandomItem:
+	; Where 0 = Super Mushroom, 1 = Fire Flower, 2 = Super Leaf
+	; OR 0 = Frog, 1 = Tanooki, 2 = Hammer
+	; Super Mushroom / Frog has the best chance in this lottery by 1...
+	.byte $00, $01, $02, $00, $01, $02, $00, $01, $02, $00, $01, $02, $00, $01, $02, $00
+
 ; Coin Hustle - Check for Toad House and terminate level entry if so
 CheckToadHouseBail:
 	LDA <World_Map_Tile
@@ -3956,9 +3991,45 @@ CheckToadHouseBail:
 ; If we try to enter a toad house, just take the item and nuke the toad house!
 ; This saves time for speedrunning and makes toad house grabs more desirable, esp for tastier items!
 ToadHouseBail:
+	; Set A000 page to 12
+	LDA #12
+	STA PAGE_A000	 
+	JSR PRGROM_Change_A000
+	
+	; This call loads Toad House definition to determine type, which is stored in Level_ObjPtr_AddrH
+	; Note that normal usage would save this to THouse_Treasure but we have no need to do so here
+	JSR Map_PrepareLevel
+	
+	; Bank swap back (if needed?)
+	; Set A000 page to 11
+	LDA #11
+	STA PAGE_A000	 
+	JSR PRGROM_Change_A000
+	
+	; Select the treasure for this Toad House...code adapted from PRG29
+	; X = THouse_Treasure - 1
+	; X = 5 if random super suit (frog, tanooki, hammer)
+	; X = 6 if standard random basic item (mushroom, flower, leaf)
+	LDX Level_ObjPtr_AddrH ; this is set by Map_PrepareLevel call above
+	DEX		 
+	CPX #$05	 
+	BLS CH_TH_Treasure	 ; branch if x<5; no need for RNG
+
+	; Use RNG to pick treasure from a set
+	LDA RandomN
+	AND #$0f
+	TAY		 ; Y = Random number 0 - 15
+
+	LDA CH_ToadHouse_RandomItem,Y	; Pick a random item
+	ADD CH_ToadHouse_ItemOff,X	 	; Add appropriate offset
+	TAX		 ; -> 'X'
+
+CH_TH_Treasure:
+	LDA CH_ToadHouse_Item2Inventory,X	 ; Load Toad House item code -> Player Inventory index
+	
 	; if toad house, for testing make first item a hustle coin
 	; we'll actually want to use real item logic here and provide a visual cue as to which item it was...
-	LDA #$0A  
+	;LDA #$0A  
 	STA Inventory_Items    
 	JSR THItem_SetColor
 	
@@ -3974,14 +4045,6 @@ ToadHouseBail:
 	; when control is restored!
 	LDA World_Map_X
 	STA $81
-	
-	; Bank swap
-	LDA #12
-	; xxx
-	
-	; JSR Map_PrepareLevel - or if side effects can just grab needed code for Toad House!
-	
-	; Bank swap back (if needed?)
 	
 	; Give real item
 	
