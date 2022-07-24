@@ -313,8 +313,8 @@ PF16:	.byte $0B, $0D, $F1, $0F, $29, $2B
 PF17:	.byte $2D, $2F, $F1, $19, $1B, $1D
 ;PF18:	.byte $2D, $2F, $F1, $A9, $AB, $F1   ; Kuribo's shoe big ? coin hustle - frame 0 
 ;PF19:	.byte $2D, $2F, $F1, $A9, $AD, $F1   ; Kuribo's shoe big ? coin hustle - frame 1
-PF18:	.byte $2D, $2F, $F1, $69, $6B, $F1   ; Coin hustle - Kuribo's shoe big ? coin hustle - frame 0 
-PF19:	.byte $2D, $2F, $F1, $69, $6D, $F1   ; Coin hustle - Kuribo's shoe big ? coin hustle - frame 1
+PF18:	.byte $2D, $2F, $F1, $11, $13, $F1   ; Coin hustle - Kuribo's shoe big ? coin hustle - frame 0 
+PF19:	.byte $2D, $2F, $F1, $11, $15, $F1   ; Coin hustle - Kuribo's shoe big ? coin hustle - frame 1
 PF1A	.byte $01, $03, $05, $07, $09, $0B
 PF1B:	.byte $0D, $0F, $39, $3B, $3D, $3F
 PF1C:	.byte $19, $1B, $1D, $1F, $21, $23
@@ -358,10 +358,10 @@ PF3F:	.byte $F1, $F1, $F1, $01, $03, $F1
 PF40:	.byte $F1, $F1, $F1, $19, $1B, $F1
 PF41:	.byte $F1, $F1, $F1, $21, $23, $F1
 PF42:	.byte $F1, $F1, $F1, $1D, $1F, $F1
-;PF43:	.byte $05, $07, $F1, $A9, $AB, $F1     ; Kuribo's shoe small - frame 0
-;PF44:	.byte $05, $07, $F1, $A9, $AD, $F1	   ; Kuribo's shoe small - frame 1
-PF43:	.byte $05, $07, $F1, $69, $6B, $F1     ; Coin hustle - Kuribo's shoe small - frame 0
-PF44:	.byte $05, $07, $F1, $69, $6D, $F1	   ; Coin hustle - Kuribo's shoe small - frame 1
+;PF43:	.byte $05, $07, $F1, $11, $13, $F1     ; Kuribo's shoe small - frame 0
+;PF44:	.byte $05, $07, $F1, $11, $15, $F1	   ; Kuribo's shoe small - frame 1
+PF43:	.byte $05, $07, $F1, $11, $13, $F1     ; Coin hustle - Kuribo's shoe small - frame 0
+PF44:	.byte $05, $07, $F1, $11, $15, $F1	   ; Coin hustle - Kuribo's shoe small - frame 1
 PF45:	.byte $29, $2B, $F1, $01, $03, $05
 PF46:	.byte $F1, $F1, $F1, $25, $27, $F1
 PF47:	.byte $F1, $F1, $F1, $29, $2B, $F1

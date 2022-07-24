@@ -2888,21 +2888,26 @@ PRG026_B07D:
 	TAX		 	; X = $22 / $45
 	LDA Inventory_Items,X	; Getting this player's coins, not items, but Nintendo used this offset, so...
 	ADD Coins_Earned 	; Add in any coins earned
-	STA Inventory_Items,X	; Store total
-	CMP #100	 	
-	BLT PRG026_B09F	 	; If coin total is < 100, jump to PRG026_B09F
+	CMP #MAX_COINS
+	BLT SaveCoinTotal	 	; If coin total is < max, jump to PRG026_B09F
+	
+	LDA #MAX_COINS      ; enforce max
+	
+SaveCoinTotal:	
+	STA Inventory_Items,X
+	
+	JMP PRG026_B09F     ; skip removed code below
+	
+	;STA Inventory_Items,X	; Store total
+	;CMP #100	 	
+	;SUB #100	 	; Take 100 away
+	;STA Inventory_Items,X	; Store new total
 
-	SUB #100	 	; Take 100 away
-	STA Inventory_Items,X	; Store new total
+	;LDX Player_Current	; X = Player_Current
+	;INC Player_Lives,X	; Extra life!
 
-	LDX Player_Current	; X = Player_Current
-	INC Player_Lives,X	; Extra life!
-
-	LDA #SND_LEVEL1UP	 	
-	STA Sound_QLevel1	; Play 1-up extra life sound
-
-	;LDA #MUS2A_WORLD8	 	
-	;STA Sound_QMusic2	; Now it's Sonic 2 Beta!
+	;LDA #SND_LEVEL1UP	 	
+	;STA Sound_QLevel1	; Play 1-up extra life sound
 
 	; This continually subtracts 10 as long you have more than 10
 	; coins, sort of a rudimentary modulus operation...

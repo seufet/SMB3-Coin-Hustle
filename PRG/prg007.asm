@@ -1983,6 +1983,7 @@ PRG007_A9A0:
 
 	RTS		 ; Return
 
+; TSS - Note: $47 is the end-stage suit-change poof sprite!
 Splash_Patterns:
 	.byte $11, $13, $15, $47, $47, $47
 
@@ -1995,8 +1996,14 @@ Splash_Remove:
 PRG007_A9AF:
 	RTS		 ; Return
 
+; Coin Hustle - we nuke this routine to suppress drawing splashes because we 
+; no longer have the splash sprites - they were over-written by the Kuribo ones!
+; The code below can therefore be over-written with something else; currently left in just for alignment
+; Note that this appears to draw the splashes for both Mario going into the water and the big fish as well
+; The little cheep cheeps don't seem to use it...
 Splash_Draw:
-	JSR Object_GetRandNearUnusedSpr	 
+	JMP PRG007_A9AF ; RTS
+	;JSR Object_GetRandNearUnusedSpr	 
 	BEQ PRG007_A9AF	 ; If no sprite available, jump to PRG007_A9AF (RTS)
 
 	STY <Temp_Var1	 ; Sprite RAM offset -> Temp_Var1
@@ -4152,7 +4159,7 @@ PRG007_B4EB:
 	; meaning when they added the "American" rule of returning to "super"
 	; state, it didn't have the suit sprite graphics available!
 
-LostShoe_Pattern:	.byte $69, $6B	; Coin Hustle - formerly $a9, $ab
+LostShoe_Pattern:	.byte $11, $13	; Coin Hustle - formerly $a9, $ab
 			.byte $39, $39	; 1
 			.byte $3B, $3B	; 2
 			.byte $3D, $3D	; 3

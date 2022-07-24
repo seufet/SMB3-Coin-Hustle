@@ -320,6 +320,8 @@ MMC3_IRQLATCH	= $C001 ; Store a temp val to be copied to MMC3_IRQCNT later
 MMC3_IRQDISABLE	= $E000 ; Disables IRQ generation and copies MMC3_IRQLATCH to MMC3_IRQCNT
 MMC3_IRQENABLE	= $E001 ; Enables IRQ generation
 
+; COIN HUSTLE CONSTANTS
+MAX_COINS = $63   ; #99 in decimal
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; SMB3 RAM DEFS 
@@ -4824,10 +4826,11 @@ TILE18_BOUNCEDBLOCK	= $C2	; Temporary tile for when block has been bounced
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; CHR ROM BEGINS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	.incchr "CHR/chr000.pcx"    ; racoon --> +2
-	.incchr "CHR/chr001.pcx"
-	.incchr "CHR/chr002.pcx"    ; racoon carrying shell --> +2
-	.incchr "CHR/chr003.pcx"    ; racoon jumping, no p-speed
+								; S = splash data
+	.incchr "CHR/chr000.pcx"    ;   racoon --> +2, S
+	.incchr "CHR/chr001.pcx"    ; S
+	.incchr "CHR/chr002.pcx"    ; S racoon carrying shell --> +2
+	.incchr "CHR/chr003.pcx"    ; S racoon jumping, no p-speed
 	.incchr "CHR/chr004.pcx"    ; mushroom/flower/star, blocks, vine, poof, score --> +3
 	.incchr "CHR/chr005.pcx"    ; P-Wing as shown in Princess Letter, non-transition World Map
 	.incchr "CHR/chr006.pcx"
@@ -4906,13 +4909,13 @@ TILE18_BOUNCEDBLOCK	= $C2	; Temporary tile for when block has been bounced
 	.incchr "CHR/chr077.pcx"
 	.incchr "CHR/chr078.pcx"
 	.incchr "CHR/chr079.pcx"
-	.incchr "CHR/chr080.pcx"    ; frog suit, land --> +2
+	.incchr "CHR/chr080.pcx"    ; frog suit, land --> +2, has sploosh bubble
 	.incchr "CHR/chr081.pcx"    ; frog suit swimming --> +2
-	.incchr "CHR/chr082.pcx"    ; mario carrying shell --> +2
-	.incchr "CHR/chr083.pcx"    ; small mario with frog/tanooki/hammer suits, water sploosh/bubble --> +2
-	.incchr "CHR/chr084.pcx"    ; big mario --> +2
-	.incchr "CHR/chr085.pcx"
-	.incchr "CHR/chr086.pcx"
+	.incchr "CHR/chr082.pcx"    ; small mario carrying shell/sliding --> +2
+	.incchr "CHR/chr083.pcx"    ; S, small mario walk/run/jump, with frog/tanooki/hammer suits, water sploosh/bubble --> +2
+	.incchr "CHR/chr084.pcx"    ; S, big mario --> +2
+	.incchr "CHR/chr085.pcx"    ; S, 
+	.incchr "CHR/chr086.pcx"    ; S
 	.incchr "CHR/chr087.pcx"    ; big mario P-speed jumping --> +2
 	.incchr "CHR/chr088.pcx"
 	.incchr "CHR/chr089.pcx"
